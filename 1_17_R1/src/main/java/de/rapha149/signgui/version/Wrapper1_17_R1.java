@@ -23,6 +23,7 @@ import org.bukkit.craftbukkit.v1_17_R1.block.CraftSign;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -60,7 +61,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
                         if (updateSign.b().equals(pos)) {
                             String[] newLines = function.apply(player, updateSign.c());
                             if (newLines != null) {
-                                IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(newLines);
+                                IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(Arrays.copyOf(newLines, 4));
                                 for (int i = 0; i < sanitizedLines.length; i++)
                                     sign.a(i, sanitizedLines[i]);
                                 conn.sendPacket(sign.getUpdatePacket());
