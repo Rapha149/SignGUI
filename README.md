@@ -40,3 +40,6 @@ Sets the function which will be executed when the player finishes editing. You c
 
 #### `open(Player player)`
 Opens the sign editor for the player. You can call this method multiple times.
+
+## Credits
+This project structure was inspired by WesJD's [AnvilGUI](https://github.com/WesJD/AnvilGUI) and I used some code from Cleymax's [SignGUI](https://github.com/Cleymax/SignGUI).
