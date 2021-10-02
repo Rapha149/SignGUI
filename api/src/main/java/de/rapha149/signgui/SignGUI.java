@@ -78,7 +78,7 @@ public class SignGUI {
      * @throws java.lang.IllegalArgumentException If the index is below 0 or above 4.
      */
     public SignGUI line(int index, String line) {
-        Validate.isTrue(index >= 0 && index <= 4, "Index out of range");
+        Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
         lines[index] = line;
         return this;
     }
