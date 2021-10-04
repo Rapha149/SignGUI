@@ -1,3 +1,0 @@
-before_install:
-   - sdk install java 16.0.2-open
-   - sdk use java 16.0.2-open
