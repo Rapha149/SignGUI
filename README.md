@@ -1,9 +1,22 @@
-# SignGUI
+# SignGUI [![](https://jitpack.io/v/Rapha149/SignGUI.svg)](https://jitpack.io/#Rapha149/SignGUI)
 An api to get input text via a sign in Minecraft.  
 Currently the api only supports 1.17, support for lower versions will come soon.
 
 ## Integration
-Coming soon
+Put the following in your `pom.xml`:
+```xml
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
+```xml
+<dependency>
+    <groupId>com.github.Rapha149.SignGUI</groupId>
+    <artifactId>signgui</artifactId>
+    <version>v1.1</version>
+</dependency>
+```
 
 ## Usage
 To open a sign editor gui for a player, do the following:
