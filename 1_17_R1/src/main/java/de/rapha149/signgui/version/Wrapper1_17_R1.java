@@ -49,7 +49,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
         conn.sendPacket(sign.getUpdatePacket());
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
 
-        ChannelPipeline pipeline = p.b.a.k.pipeline();
+        ChannelPipeline pipeline = conn.a.k.pipeline();
         if (pipeline.names().contains("SignGUI"))
             pipeline.remove("SignGUI");
         pipeline.addAfter("decoder", "SignGUI", new MessageToMessageDecoder<Packet<?>>() {
