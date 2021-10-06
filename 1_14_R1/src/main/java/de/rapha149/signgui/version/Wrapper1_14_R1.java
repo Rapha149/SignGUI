@@ -46,9 +46,6 @@ public class Wrapper1_14_R1 implements VersionWrapper {
         for (int i = 0; i < sanitizedLines.length; i++)
             sign.a(i, sanitizedLines[i]);
 
-        /*PacketPlayOutBlockChange blockChange = new PacketPlayOutBlockChange(world, pos);
-        blockChange.block = getBlockData(type);
-        conn.sendPacket(blockChange);*/
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));

@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPosition;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
-import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.network.protocol.game.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.server.network.PlayerConnection;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.block.CraftSign;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -39,13 +37,13 @@ public class Wrapper1_17_R1 implements VersionWrapper {
         Location loc = getLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
-        TileEntitySign sign = new TileEntitySign(pos, getBlockData(type));
+        TileEntitySign sign = new TileEntitySign(pos, null);
         sign.setColor(EnumColor.valueOf(color.toString()));
         IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(lines);
         for (int i = 0; i < sanitizedLines.length; i++)
             sign.a(i, sanitizedLines[i]);
 
-        conn.sendPacket(new PacketPlayOutBlockChange(pos, getBlockData(type)));
+        player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
 
@@ -56,8 +54,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
             @Override
             protected void decode(ChannelHandlerContext chc, Packet<?> packet, List<Object> out) {
                 try {
-                    if (packet instanceof PacketPlayInUpdateSign) {
-                        PacketPlayInUpdateSign updateSign = (PacketPlayInUpdateSign) packet;
+                    if (packet instanceof PacketPlayInUpdateSign updateSign) {
                         if (updateSign.b().equals(pos)) {
                             String[] newLines = function.apply(player, updateSign.c());
                             if (newLines != null) {
@@ -68,7 +65,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
                                 conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
                             } else {
                                 pipeline.remove("SignGUI");
-                                conn.sendPacket(new PacketPlayOutBlockChange(pos, ((CraftWorld) loc.getWorld()).getHandle().getType(pos)));
+                                player.sendBlockChange(loc, loc.getBlock().getBlockData());
                             }
                         }
                     }
@@ -79,28 +76,5 @@ public class Wrapper1_17_R1 implements VersionWrapper {
                 out.add(packet);
             }
         });
-    }
-
-    private IBlockData getBlockData(Material type) {
-        switch(type) {
-            case OAK_SIGN:
-                return Blocks.cg.getBlockData();
-            case BIRCH_SIGN:
-                return Blocks.ci.getBlockData();
-            case SPRUCE_SIGN:
-                return Blocks.ch.getBlockData();
-            case JUNGLE_SIGN:
-                return Blocks.ck.getBlockData();
-            case ACACIA_SIGN:
-                return Blocks.cj.getBlockData();
-            case DARK_OAK_SIGN:
-                return Blocks.cl.getBlockData();
-            case CRIMSON_SIGN:
-                return Blocks.ni.getBlockData();
-            case WARPED_SIGN:
-                return Blocks.nj.getBlockData();
-            default:
-                throw new IllegalArgumentException("No sign type");
-        }
     }
 }

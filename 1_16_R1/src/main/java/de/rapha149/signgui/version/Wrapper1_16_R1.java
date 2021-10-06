@@ -26,7 +26,6 @@ public class Wrapper1_16_R1 implements VersionWrapper {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
         Location loc = getLocation(player);
-        WorldServer world = ((CraftWorld) loc.getWorld()).getHandle();
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
         TileEntitySign sign = new TileEntitySign();
@@ -36,9 +35,7 @@ public class Wrapper1_16_R1 implements VersionWrapper {
         for (int i = 0; i < sanitizedLines.length; i++)
             sign.a(i, sanitizedLines[i]);
 
-        PacketPlayOutBlockChange blockChange = new PacketPlayOutBlockChange(world, pos);
-        blockChange.block = getBlockData(type);
-        conn.sendPacket(blockChange);
+        player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
         conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
 
@@ -61,7 +58,7 @@ public class Wrapper1_16_R1 implements VersionWrapper {
                                 conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
                             } else {
                                 pipeline.remove("SignGUI");
-                                conn.sendPacket(new PacketPlayOutBlockChange(world, pos));
+                                player.sendBlockChange(loc, loc.getBlock().getBlockData());
                             }
                         }
                     }
@@ -72,28 +69,5 @@ public class Wrapper1_16_R1 implements VersionWrapper {
                 out.add(packet);
             }
         });
-    }
-
-    private IBlockData getBlockData(Material type) {
-        switch(type) {
-            case OAK_SIGN:
-                return Blocks.OAK_SIGN.getBlockData();
-            case BIRCH_SIGN:
-                return Blocks.BIRCH_SIGN.getBlockData();
-            case SPRUCE_SIGN:
-                return Blocks.SPRUCE_SIGN.getBlockData();
-            case JUNGLE_SIGN:
-                return Blocks.JUNGLE_SIGN.getBlockData();
-            case ACACIA_SIGN:
-                return Blocks.ACACIA_SIGN.getBlockData();
-            case DARK_OAK_SIGN:
-                return Blocks.DARK_OAK_SIGN.getBlockData();
-            case CRIMSON_SIGN:
-                return Blocks.CRIMSON_SIGN.getBlockData();
-            case WARPED_SIGN:
-                return Blocks.WARPED_SIGN.getBlockData();
-            default:
-                throw new IllegalArgumentException("No sign type");
-        }
     }
 }
