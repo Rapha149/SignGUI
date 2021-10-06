@@ -1,6 +1,7 @@
 package de.rapha149.signgui;
 
 import de.rapha149.signgui.version.VersionWrapper;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -45,6 +46,11 @@ public class SignGUI {
     private DyeColor color;
 
     /**
+     * If enabled, the returned lines will not have any colors.
+     */
+    private boolean stripColor;
+
+    /**
      * The {@link java.util.function.BiFunction} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
      */
     private BiFunction<Player, String[], String[]> function;
@@ -56,6 +62,7 @@ public class SignGUI {
         lines = new String[4];
         type = Material.OAK_SIGN;
         color = DyeColor.BLACK;
+        stripColor = false;
     }
 
     /**
@@ -109,6 +116,27 @@ public class SignGUI {
     }
 
     /**
+     * Sets stripColor to true. See {@link SignGUI#stripColor(boolean)}
+     *
+     * @return The {@link de.rapha149.signgui.SignGUI} instance
+     */
+    public SignGUI stripColor() {
+        stripColor = true;
+        return this;
+    }
+
+    /**
+     * If enabled, the returned lines will not have any colors.
+     *
+     * @return The {@link de.rapha149.signgui.SignGUI} instance
+     */
+    public SignGUI stripColor(boolean stripColor) {
+        this.stripColor = stripColor;
+        return this;
+    }
+
+
+    /**
      * Sets the {@link java.util.function.Consumer} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
      * Will override {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.BiFunction)}
      *
@@ -147,7 +175,8 @@ public class SignGUI {
         Validate.notNull(color, "The color cannot be null");
         Validate.notNull(function, "The function cannot be null.");
         try {
-            WRAPPER.openSignEditor(player, lines, type, color, function);
+            WRAPPER.openSignEditor(player, lines, type, color,
+                    stripColor ? (p, lines) -> function.apply(p, Arrays.stream(lines).map(ChatColor::stripColor).toArray(String[]::new)) : function);
         } catch (Exception e) {
             e.printStackTrace();
         }
