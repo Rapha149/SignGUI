@@ -14,7 +14,7 @@ Put the following in your `pom.xml`:
 <dependency>
     <groupId>com.github.Rapha149.SignGUI</groupId>
     <artifactId>signgui</artifactId>
-    <version>v1.1</version>
+    <version>v1.2</version>
 </dependency>
 ```
 
@@ -22,10 +22,11 @@ Put the following in your `pom.xml`:
 To open a sign editor gui for a player, do the following:
 ```java
 new SignGUI()
-    .lines("Line 1", null, "Line 3")
+    .lines("§6Line 1", null, "§6Line 3")
     .line(3, "Line 4")
     .type(Material.DARK_OAK_SIGN)
     .color(DyeColor.YELLOW)
+    .stripColor()
     .onFinish((p, lines) -> {
         if (!lines[1].isEmpty() && !lines[3].isEmpty()) {
             player.sendMessage("Line 2: " + lines[1] + "\nLine 4:" + lines[3]);
@@ -34,19 +35,26 @@ new SignGUI()
             return lines;
     }).open(player);
 ```
+You don't have to call all methods. Only `onFinish` and `open` are mandatory.  
 Here is the explanation of the different methods:
 
 #### `lines(String... lines)`
-Sets the lines to show when the sign is opened. You don't have to pass 4 strings. The default is 4 empty lines.
+Sets the lines to show when the sign is opened. You don't have to pass 4 strings. The default is 4 empty lines. You can pass `null` for an empty line.
 
 #### `line(int index, String line)`
-Sets the line at the specific index. The index has to be between 0 and 3.
+Sets the line at the specific index. The index has to be between 0 and 3. You can pass `null` for an empty line.
 
 #### `type(Material type)`
 Sets the type of the sign. The default is OAK_SIGN.
 
 #### `color(DyeColor color`
-Sets the color of the text. The default is BLACK.
+Sets the color of the text. The default is BLACK. You can also use color codes to color your text. The cursor will be always in the given color, however. The returned lines will not be colored in this color.
+
+#### `stripColor()`
+Executes `stripColor(true)`
+
+#### `stripColor(true)`
+If enabled, the returned lines will not have any colors. Colors stated by the plugin and by players will be stripped (Players can use color codes by pasting a `§`)
 
 #### `onFinish(BiFunction<Player, String[], String[]> function`
 Sets the function which will be executed when the player finishes editing. You can return `null` or new lines. If you return new lines, the sign editor will be opened with these lines again.
