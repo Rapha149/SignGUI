@@ -146,7 +146,11 @@ public class SignGUI {
         Validate.isTrue(signTypes.contains(type.toString()), "The type is not a sign type.");
         Validate.notNull(color, "The color cannot be null");
         Validate.notNull(function, "The function cannot be null.");
-        WRAPPER.openSignEditor(player, lines, type, color, function);
+        try {
+            WRAPPER.openSignEditor(player, lines, type, color, function);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 }
