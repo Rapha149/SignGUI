@@ -42,9 +42,8 @@ public class Wrapper1_14_R1 implements VersionWrapper {
         field.set(sign, EnumColor.valueOf(color.toString()));
         field.setAccessible(false);
 
-        IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(lines);
-        for (int i = 0; i < sanitizedLines.length; i++)
-            sign.a(i, sanitizedLines[i]);
+        for (int i = 0; i < lines.length; i++)
+            sign.a(i, lines[i] != null ? new ChatComponentText(lines[i]) : new ChatComponentText(""));
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
@@ -62,9 +61,8 @@ public class Wrapper1_14_R1 implements VersionWrapper {
                         if (updateSign.b().equals(pos)) {
                             String[] newLines = function.apply(player, updateSign.c());
                             if (newLines != null) {
-                                IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(Arrays.copyOf(newLines, 4));
-                                for (int i = 0; i < sanitizedLines.length; i++)
-                                    sign.a(i, sanitizedLines[i]);
+                                for (int i = 0; i < newLines.length; i++)
+                                    sign.a(i, newLines[i] != null ? new ChatComponentText(newLines[i]) : new ChatComponentText(""));
                                 conn.sendPacket(sign.getUpdatePacket());
                                 conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
                             } else {

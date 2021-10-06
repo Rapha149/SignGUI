@@ -7,12 +7,9 @@ import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftSign;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -31,9 +28,8 @@ public class Wrapper1_16_R3 implements VersionWrapper {
         TileEntitySign sign = new TileEntitySign();
         sign.setPosition(pos);
         sign.setColor(EnumColor.valueOf(color.toString()));
-        IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(lines);
-        for (int i = 0; i < sanitizedLines.length; i++)
-            sign.a(i, sanitizedLines[i]);
+        for (int i = 0; i < lines.length; i++)
+            sign.a(i, lines[i] != null ? new ChatComponentText(lines[i]) : new ChatComponentText(""));
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
@@ -51,9 +47,8 @@ public class Wrapper1_16_R3 implements VersionWrapper {
                         if (updateSign.b().equals(pos)) {
                             String[] newLines = function.apply(player, updateSign.c());
                             if (newLines != null) {
-                                IChatBaseComponent[] sanitizedLines = CraftSign.sanitizeLines(Arrays.copyOf(newLines, 4));
-                                for (int i = 0; i < sanitizedLines.length; i++)
-                                    sign.a(i, sanitizedLines[i]);
+                                for (int i = 0; i < newLines.length; i++)
+                                    sign.a(i, newLines[i] != null ? new ChatComponentText(newLines[i]) : new ChatComponentText(""));
                                 conn.sendPacket(sign.getUpdatePacket());
                                 conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
                             } else {
