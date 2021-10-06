@@ -24,11 +24,5 @@
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>de.rapha149.signgui</groupId>
-            <artifactId>signgui-1_14_1_R1</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>
