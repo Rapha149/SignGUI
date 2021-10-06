@@ -137,7 +137,7 @@ public class SignGUI {
 
 
     /**
-     * Sets the {@link java.util.function.Consumer} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
+     * Sets the {@link java.util.function.Function} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
      * Will override {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.BiFunction)}
      *
      * @param function The function.
