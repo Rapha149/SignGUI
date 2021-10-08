@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -21,6 +22,14 @@ public class Wrapper1_13_R2 implements VersionWrapper {
     @Override
     public Material getDefaultType() {
         return Material.SIGN;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Material> getSignTypes() {
+        return Arrays.asList(Material.SIGN);
     }
 
     /**

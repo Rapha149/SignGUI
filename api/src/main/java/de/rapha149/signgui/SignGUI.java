@@ -12,12 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class SignGUI {
 
     private static final VersionWrapper WRAPPER;
-    private static final List<String> signTypes = Arrays.asList("SIGN", "OAK_SIGN", "BIRCH_SIGN",
-            "SPRUCE_SIGN", "JUNGLE_SIGN", "ACACIA_SIGN", "DARK_OAK_SIGN", "CRIMSON_SIGN", "WARPED_SIGN");
+    private static final List<Material> signTypes;
+    private static final String availableSignTypes;
 
     static {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
@@ -28,6 +29,9 @@ public class SignGUI {
         } catch (ClassNotFoundException exception) {
             throw new IllegalStateException("SignGUI does not support the server version \"" + version + "\"", exception);
         }
+
+        signTypes = WRAPPER.getSignTypes();
+        availableSignTypes = signTypes.stream().map(Material::toString).collect(Collectors.joining(", "));
     }
 
     /**
@@ -98,7 +102,7 @@ public class SignGUI {
      */
     public SignGUI type(Material type) {
         Validate.notNull(type, "Type cannot be null");
-        Validate.isTrue(signTypes.contains(type.toString()), "Type is not a sign type.");
+        Validate.isTrue(signTypes.contains(type), "Type is not a sign type. Available sign types: " + availableSignTypes);
         this.type = type;
         return this;
     }
@@ -171,7 +175,7 @@ public class SignGUI {
     public SignGUI open(Player player) {
         Validate.notNull(player, "The player cannot be null");
         Validate.notNull(type, "Type cannot be null");
-        Validate.isTrue(signTypes.contains(type.toString()), "The type is not a sign type.");
+        Validate.isTrue(signTypes.contains(type), "The type is not a sign type. Available sign types: " + availableSignTypes);
         Validate.notNull(color, "The color cannot be null");
         Validate.notNull(function, "The function cannot be null.");
         try {

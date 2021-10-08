@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -16,6 +17,11 @@ public interface VersionWrapper {
      * @return The default type for the sign. Different between some versions.
      */
     Material getDefaultType();
+
+    /**
+     * @return A list of available sign types. Different between some versions.
+     */
+    List<Material> getSignTypes();
 
     /**
      * Called when a sign gui should be opened.
