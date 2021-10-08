@@ -7,7 +7,6 @@ import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -32,7 +31,6 @@ public class Wrapper1_13_R2 implements VersionWrapper {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
         Location loc = getLocation(player);
-        WorldServer world = ((CraftWorld) loc.getWorld()).getHandle();
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
         TileEntitySign sign = new TileEntitySign();
@@ -63,7 +61,7 @@ public class Wrapper1_13_R2 implements VersionWrapper {
                                 conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
                             } else {
                                 pipeline.remove("SignGUI");
-                                conn.sendPacket(new PacketPlayOutBlockChange(world, pos));
+                                player.sendBlockChange(loc, loc.getBlock().getBlockData());
                             }
                         }
                     }
