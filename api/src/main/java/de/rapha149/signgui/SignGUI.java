@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class SignGUI {
 
     private static final VersionWrapper WRAPPER;
-    private static final List<String> signTypes = Arrays.asList("OAK_SIGN", "BIRCH_SIGN",
+    private static final List<String> signTypes = Arrays.asList("SIGN", "OAK_SIGN", "BIRCH_SIGN",
             "SPRUCE_SIGN", "JUNGLE_SIGN", "ACACIA_SIGN", "DARK_OAK_SIGN", "CRIMSON_SIGN", "WARPED_SIGN");
 
     static {
@@ -60,7 +60,7 @@ public class SignGUI {
      */
     public SignGUI() {
         lines = new String[4];
-        type = Material.OAK_SIGN;
+        type = WRAPPER.getDefaultType();
         color = DyeColor.BLACK;
         stripColor = false;
     }

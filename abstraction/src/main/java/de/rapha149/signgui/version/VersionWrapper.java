@@ -13,6 +13,11 @@ import java.util.function.BiFunction;
 public interface VersionWrapper {
 
     /**
+     * @return The default type for the sign. Different between some versions.
+     */
+    Material getDefaultType();
+
+    /**
      * Called when a sign gui should be opened.
      *
      * @param player   The player to whom the sign is to be shown.

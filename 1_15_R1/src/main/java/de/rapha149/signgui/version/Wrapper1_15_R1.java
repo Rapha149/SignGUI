@@ -19,6 +19,14 @@ public class Wrapper1_15_R1 implements VersionWrapper {
      * {@inheritDoc}
      */
     @Override
+    public Material getDefaultType() {
+        return Material.OAK_SIGN;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, BiFunction<Player, String[], String[]> function) {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
