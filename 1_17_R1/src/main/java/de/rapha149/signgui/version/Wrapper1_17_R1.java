@@ -4,7 +4,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.minecraft.core.BlockPosition;
-import net.minecraft.network.chat.ChatComponentText;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
@@ -55,8 +54,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
         TileEntitySign sign = new TileEntitySign(pos, null);
         sign.setColor(EnumColor.valueOf(color.toString()));
         for (int i = 0; i < lines.length; i++)
-            if (lines[i] != null)
-                sign.a(i, new ChatComponentText(lines[i]));
+            sign.a(i, IChatBaseComponent.a(lines[i]));
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
@@ -71,8 +69,9 @@ public class Wrapper1_17_R1 implements VersionWrapper {
                 try {
                     if (packet instanceof PacketPlayInUpdateSign updateSign) {
                         if (updateSign.b().equals(pos)) {
-                            String[] newLines = function.apply(player, updateSign.c());
-                            if (newLines != null) {
+                            String[] response = function.apply(player, updateSign.c());
+                            if (response != null) {
+                                String[] newLines = Arrays.copyOf(response, 4);
                                 for (int i = 0; i < newLines.length; i++)
                                     sign.a(i, IChatBaseComponent.a(newLines[i]));
                                 conn.sendPacket(sign.getUpdatePacket());

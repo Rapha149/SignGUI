@@ -45,8 +45,7 @@ public class Wrapper1_13_R1 implements VersionWrapper {
         TileEntitySign sign = new TileEntitySign();
         sign.setPosition(pos);
         for (int i = 0; i < lines.length; i++)
-            if (lines[i] != null)
-                sign.lines[i] = new ChatComponentText(lines[i]);
+            sign.lines[i] = new ChatComponentText(lines[i] != null ? lines[i] : "");
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
@@ -62,11 +61,11 @@ public class Wrapper1_13_R1 implements VersionWrapper {
                     if (packet instanceof PacketPlayInUpdateSign) {
                         PacketPlayInUpdateSign updateSign = (PacketPlayInUpdateSign) packet;
                         if (updateSign.b().equals(pos)) {
-                            String[] newLines = function.apply(player, updateSign.c());
-                            if (newLines != null) {
+                            String[] response = function.apply(player, updateSign.c());
+                            if (response != null) {
+                                String[] newLines = Arrays.copyOf(response, 4);
                                 for (int i = 0; i < newLines.length; i++)
-                                    if (lines[i] != null)
-                                        sign.lines[i] = new ChatComponentText(lines[i]);
+                                    sign.lines[i] = new ChatComponentText(newLines[i] != null ? newLines[i] : "");
                                 conn.sendPacket(sign.getUpdatePacket());
                                 conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
                             } else {
