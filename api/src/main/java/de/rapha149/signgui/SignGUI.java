@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -53,6 +54,11 @@ public class SignGUI {
      * If enabled, the returned lines will not have any colors.
      */
     private boolean stripColor;
+
+    /**
+     * The location where the sign should be placed. Can be null for default. See {@link de.rapha149.signgui.version.VersionWrapper#getLocation(org.bukkit.entity.Player)}
+     */
+    private Location signLoc;
 
     /**
      * The {@link java.util.function.BiFunction} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
@@ -139,6 +145,19 @@ public class SignGUI {
         return this;
     }
 
+    /**
+     * Sets the location where the sign should be placed. Can be null for default. See {@link de.rapha149.signgui.version.VersionWrapper#getLocation(org.bukkit.entity.Player)}
+     * The sign will only be visible for the player. It won't be placed on the server or be visible for other players.
+     * Warning: Placing the sign out of the chunks visible for the player, problems will occur. Preferably place it in the same chunk as the player.
+     *
+     * @param signLoc The new location.
+     * @return The {@link de.rapha149.signgui.SignGUI} instance
+     */
+    public SignGUI signLocation(Location signLoc) {
+        this.signLoc = signLoc;
+        return this;
+    }
+
 
     /**
      * Sets the {@link java.util.function.Function} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
@@ -179,7 +198,7 @@ public class SignGUI {
         Validate.notNull(color, "The color cannot be null");
         Validate.notNull(function, "The function cannot be null.");
         try {
-            WRAPPER.openSignEditor(player, lines, type, color,
+            WRAPPER.openSignEditor(player, lines, type, color, signLoc,
                     stripColor ? (p, lines) -> function.apply(p, Arrays.stream(lines).map(ChatColor::stripColor).toArray(String[]::new)) : function);
         } catch (Exception e) {
             e.printStackTrace();

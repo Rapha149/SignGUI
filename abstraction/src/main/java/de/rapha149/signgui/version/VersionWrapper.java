@@ -30,9 +30,10 @@ public interface VersionWrapper {
      * @param lines    The lines that are shown.
      * @param type     The type of the sign.
      * @param color    The color of the sign (1.14+)
+     * @param signLoc  The location where the sign should be placed. Can be null for default. See {@link de.rapha149.signgui.version.VersionWrapper#getLocation(org.bukkit.entity.Player)}
      * @param function The {@link java.util.function.BiFunction} which is executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
      */
-    void openSignEditor(Player player, String[] lines, Material type, DyeColor color, BiFunction<Player, String[], String[]> function) throws Exception;
+    void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiFunction<Player, String[], String[]> function) throws Exception;
 
     /**
      * Get the location where the sign should be placed for the player.
