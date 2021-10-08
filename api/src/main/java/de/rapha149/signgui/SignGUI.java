@@ -108,7 +108,7 @@ public class SignGUI {
      */
     public SignGUI type(Material type) {
         Validate.notNull(type, "Type cannot be null");
-        Validate.isTrue(signTypes.contains(type), "Type is not a sign type. Available sign types: " + availableSignTypes);
+        Validate.isTrue(signTypes.contains(type), type + " is not a sign type. Available sign types: " + availableSignTypes);
         this.type = type;
         return this;
     }
@@ -194,7 +194,7 @@ public class SignGUI {
     public SignGUI open(Player player) {
         Validate.notNull(player, "The player cannot be null");
         Validate.notNull(type, "Type cannot be null");
-        Validate.isTrue(signTypes.contains(type), "The type is not a sign type. Available sign types: " + availableSignTypes);
+        Validate.isTrue(signTypes.contains(type), type + " is not a sign type. Available sign types: " + availableSignTypes);
         Validate.notNull(color, "The color cannot be null");
         Validate.notNull(function, "The function cannot be null.");
         try {
