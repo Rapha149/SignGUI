@@ -37,7 +37,8 @@ public class Wrapper1_16_R2 implements VersionWrapper {
         sign.setPosition(pos);
         sign.setColor(EnumColor.valueOf(color.toString()));
         for (int i = 0; i < lines.length; i++)
-            sign.a(i, lines[i] != null ? new ChatComponentText(lines[i]) : new ChatComponentText(""));
+            if (lines[i] != null)
+                sign.a(i, new ChatComponentText(lines[i]));
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());

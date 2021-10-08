@@ -49,7 +49,8 @@ public class Wrapper1_14_R1 implements VersionWrapper {
         field.setAccessible(false);
 
         for (int i = 0; i < lines.length; i++)
-            sign.a(i, lines[i] != null ? new ChatComponentText(lines[i]) : new ChatComponentText(""));
+            if (lines[i] != null)
+                sign.a(i, new ChatComponentText(lines[i]));
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());

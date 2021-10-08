@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.minecraft.core.BlockPosition;
+import net.minecraft.network.chat.ChatComponentText;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayInUpdateSign;
@@ -44,7 +45,8 @@ public class Wrapper1_17_R1 implements VersionWrapper {
         TileEntitySign sign = new TileEntitySign(pos, null);
         sign.setColor(EnumColor.valueOf(color.toString()));
         for (int i = 0; i < lines.length; i++)
-            sign.a(i, IChatBaseComponent.a(lines[i]));
+            if (lines[i] != null)
+                sign.a(i, new ChatComponentText(lines[i]));
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.sendPacket(sign.getUpdatePacket());
