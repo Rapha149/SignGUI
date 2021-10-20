@@ -48,7 +48,7 @@ Sets the line at the specific index. The index has to be between 0 and 3. You ca
 #### `type(Material type)`
 Sets the type of the sign. The default is OAK_SIGN.
 
-#### `color(DyeColor color`
+#### `color(DyeColor color)`
 Sets the color of the text. The default is BLACK. You can also use color codes to color your text. The cursor will be always in the given color, however. The returned lines will not be colored in this color.
 
 #### `stripColor()`
@@ -56,6 +56,9 @@ Executes `stripColor(true)`
 
 #### `stripColor(true)`
 If enabled, the returned lines will not have any colors. Colors stated by the plugin and by players will be stripped (Players can use color codes by pasting a `§`)
+
+#### `signLocation(Location)`
+Sets the location of the sign. Default is the player's coordinates, but `y = 1`.
 
 #### `onFinish(BiFunction<Player, String[], String[]> function`
 Sets the function which will be executed when the player finishes editing. You can return `null` or new lines. If you return new lines, the sign editor will be opened with these lines again.
