@@ -3,6 +3,7 @@ An api to get input text via a sign in Minecraft.
 Currently the api only supports 1.17, support for lower versions will come soon.
 
 ## Integration
+
 Put the following in your `pom.xml`:
 ```xml
 <repository>
@@ -17,6 +18,8 @@ Put the following in your `pom.xml`:
     <version>v1.4</version>
 </dependency>
 ```
+
+### [Javadoc](https://javadoc.jitpack.io/com/github/Rapha149/SignGUI/signgui/v1.5/javadoc/de/rapha149/signgui/package-summary.html)  
 
 ## Usage
 To open a sign editor gui for a player, do the following:
