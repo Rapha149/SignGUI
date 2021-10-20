@@ -42,6 +42,8 @@ public interface VersionWrapper {
      * @return The location of the sign (default behind the player)
      */
     default Location getLocation(Player player) {
-        return player.getLocation().clone().add(player.getLocation().getDirection().normalize().multiply(-1));
+        Location loc = player.getLocation().clone();
+        loc.setY(1);
+        return loc;
     }
 }
