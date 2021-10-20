@@ -39,7 +39,7 @@ public interface VersionWrapper {
      * Get the location where the sign should be placed for the player.
      *
      * @param player The player.
-     * @return The location of the sign (default behind the player)
+     * @return The location of the sign (default y = 1)
      */
     default Location getLocation(Player player) {
         Location loc = player.getLocation().clone();
