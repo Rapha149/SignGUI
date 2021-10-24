@@ -35,7 +35,7 @@ new SignGUI()
             player.sendMessage("Line 2: " + lines[1] + "\nLine 4:" + lines[3]);
             return null;
         } else
-            // Due to stripColor the sign will only display yellow lines after it has been closed once.
+            // Due to stripColor the sign won't display line 1 and 3 in orange after it has been closed once.
             return lines;
     }).open(player);
 ```
