@@ -63,8 +63,12 @@ If enabled, the returned lines will not have any colors. Colors stated by the pl
 #### `signLocation(Location)`
 Sets the location of the sign. Default is the player's coordinates, but `y = 1`.
 
+#### `onFinish(Function<String[], String[]> function`
+Same as `onFinish(BiFunction<Player, String[], String[]> function` but without the player.
+
 #### `onFinish(BiFunction<Player, String[], String[]> function`
-Sets the function which will be executed when the player finishes editing. You can return `null` or new lines. If you return new lines, the sign editor will be opened with these lines again.
+Sets the function which will be executed when the player finishes editing. You can return `null` or new lines. If you return new lines, the sign editor will be opened with these lines again.  
+Please note that due to packet listening the function will be executed asynchronously. If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a scheduled task from Bukkit.
 
 #### `open(Player player)`
 Opens the sign editor for the player. You can call this method multiple times.
