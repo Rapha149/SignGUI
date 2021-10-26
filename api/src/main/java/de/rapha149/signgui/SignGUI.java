@@ -61,7 +61,7 @@ public class SignGUI {
     private Location signLoc;
 
     /**
-     * The {@link java.util.function.BiFunction} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
+     * The {@link java.util.function.BiFunction} which will be executed when the editing is finished. See {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.BiFunction)}
      */
     private BiFunction<Player, String[], String[]> function;
 
@@ -148,7 +148,7 @@ public class SignGUI {
     /**
      * Sets the location where the sign should be placed. Can be null for default. See {@link de.rapha149.signgui.version.VersionWrapper#getLocation(org.bukkit.entity.Player)}
      * The sign will only be visible for the player. It won't be placed on the server or be visible for other players.
-     * Warning: Placing the sign out of the chunks visible for the player, problems will occur. Preferably place it in the same chunk as the player.
+     * Warning: Placing the sign out of the chunks visible for the player will cause problems to occur. Preferably place it in the same chunk as the player.
      *
      * @param signLoc The new location.
      * @return The {@link de.rapha149.signgui.SignGUI} instance
@@ -162,6 +162,9 @@ public class SignGUI {
     /**
      * Sets the {@link java.util.function.Function} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
      * Will override {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.BiFunction)}
+     * <p>
+     * Please note that due to packet listening the function will be executed asynchronously.
+     * If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a Bukkit task.
      *
      * @param function The function.
      * @return The {@link de.rapha149.signgui.SignGUI} instance
@@ -175,6 +178,9 @@ public class SignGUI {
     /**
      * Sets the {@link java.util.function.BiFunction} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
      * Will override {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.Function)}
+     * <p>
+     * Please note that due to packet listening the function will be executed asynchronously.
+     * If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a Bukkit task.
      *
      * @param function The function.
      * @return The {@link de.rapha149.signgui.SignGUI} instance
@@ -186,7 +192,7 @@ public class SignGUI {
     }
 
     /**
-     * Constructs and opens the sign gui for the player.
+     * Opens the sign gui for the player.
      *
      * @param player The player.
      * @return The {@link de.rapha149.signgui.SignGUI} instance

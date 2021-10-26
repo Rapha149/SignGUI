@@ -70,7 +70,7 @@ Overrides `onFinish(BiFunction<Player, String[], String[]>`
 #### `onFinish(BiFunction<Player, String[], String[]>`
 Sets the function which will be executed when the player finishes editing. You can return `null` or new lines. If you return new lines, the sign editor will be opened with these lines again.  
 Overrides `onFinish(Function<String[], String[]>`  
-Please note that due to packet listening the function will be executed asynchronously. If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a scheduled task from Bukkit.
+Please note that due to packet listening the function will be executed asynchronously. If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a Bukkit task.
 
 #### `open(Player player)`
 Opens the sign editor for the player. You can call this method multiple times.
