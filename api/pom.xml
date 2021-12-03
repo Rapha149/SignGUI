@@ -7,7 +7,7 @@
     <parent>
         <artifactId>signgui-parent</artifactId>
         <groupId>de.rapha149.signgui</groupId>
-        <version>1.6-SNAPSHOT</version>
+        <version>1.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>signgui</artifactId>
