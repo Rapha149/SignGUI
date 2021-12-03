@@ -41,7 +41,7 @@ public class Wrapper1_8_R1 implements VersionWrapper {
     public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiFunction<Player, String[], String[]> function) throws NoSuchFieldException, IllegalAccessException {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
-        Location loc = signLoc != null ? signLoc : getLocation(player);
+        Location loc = signLoc != null ? signLoc : getLocation(player, 1);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
         TileEntitySign sign = new TileEntitySign();
