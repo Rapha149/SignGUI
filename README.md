@@ -15,7 +15,7 @@ Put the following in your `pom.xml`:
 <dependency>
     <groupId>com.github.Rapha149.SignGUI</groupId>
     <artifactId>signgui</artifactId>
-    <version>v1.4</version>
+    <version>v1.6</version>
 </dependency>
 ```
 
