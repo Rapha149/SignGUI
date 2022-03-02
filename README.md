@@ -1,6 +1,6 @@
 # SignGUI [![](https://jitpack.io/v/Rapha149/SignGUI.svg)](https://jitpack.io/#Rapha149/SignGUI)
 An api to get input text via a sign in Minecraft.  
-The api supports the Minecraft versions from `1.8` to `1.18.1`.
+The api supports the Minecraft versions from `1.8` to `1.18.2`.
 
 ## Integration
 
