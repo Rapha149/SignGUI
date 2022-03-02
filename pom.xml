@@ -7,7 +7,7 @@
     <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7.1-SNAPSHOT</version>
 
     <modules>
         <module>api</module>
