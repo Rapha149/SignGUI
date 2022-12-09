@@ -7,7 +7,7 @@
     <parent>
         <artifactId>signgui-parent</artifactId>
         <groupId>de.rapha149.signgui</groupId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>signgui</artifactId>
@@ -136,6 +136,12 @@
         <dependency>
             <groupId>de.rapha149.signgui</groupId>
             <artifactId>signgui-1_19_R1</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.rapha149.signgui</groupId>
+            <artifactId>signgui-1_19_R2</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
