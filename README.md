@@ -15,7 +15,7 @@ Put the following in your `pom.xml`:
 <dependency>
     <groupId>com.github.Rapha149.SignGUI</groupId>
     <artifactId>signgui</artifactId>
-    <version>v1.9.2</version>
+    <version>v1.9.3</version>
 </dependency>
 ```
 
@@ -61,7 +61,7 @@ Executes `stripColor(true)`
 If enabled, the returned lines will not have any colors. Colors stated by the plugin and by players will be stripped (Players can use color codes by pasting a `§`)
 
 #### `signLocation(Location)`
-Sets the location of the sign. Default is the player's coordinates, but `y = 1`.
+Sets the location of the sign. Default is a few blocks behind the player.
 
 #### `onFinish(Function<String[], String[]>`
 Same as `onFinish(BiFunction<Player, String[], String[]>` but without the player.  
