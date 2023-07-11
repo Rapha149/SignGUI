@@ -74,7 +74,7 @@ public class Wrapper1_19_R3 implements VersionWrapper {
                 throw new IllegalStateException("Unable to access NetworkManager field in PlayerConnection class.");
         }
 
-        Location loc = signLoc != null ? signLoc : getLocation(player, -63);
+        Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
         TileEntitySign sign = new TileEntitySign(pos, null);

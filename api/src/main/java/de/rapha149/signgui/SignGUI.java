@@ -56,7 +56,7 @@ public class SignGUI {
     private boolean stripColor;
 
     /**
-     * The location where the sign should be placed. Can be null for default. See {@link de.rapha149.signgui.version.VersionWrapper#getLocation(org.bukkit.entity.Player, int)}
+     * The location where the sign should be placed. Can be null for default.
      */
     private Location signLoc;
 
@@ -138,6 +138,8 @@ public class SignGUI {
     /**
      * If enabled, the returned lines will not have any colors.
      *
+     * @param stripColor If the colors should be stripped
+     *
      * @return The {@link de.rapha149.signgui.SignGUI} instance
      */
     public SignGUI stripColor(boolean stripColor) {
@@ -146,7 +148,7 @@ public class SignGUI {
     }
 
     /**
-     * Sets the location where the sign should be placed. Can be null for default. See {@link de.rapha149.signgui.version.VersionWrapper#getLocation(org.bukkit.entity.Player, int)}
+     * Sets the location where the sign should be placed. Can be null for default. The default location is behind the player.
      * The sign will only be visible for the player. It won't be placed on the server or be visible for other players.
      * Warning: Placing the sign out of the chunks visible for the player will cause problems to occur. Preferably place it in the same chunk as the player.
      *

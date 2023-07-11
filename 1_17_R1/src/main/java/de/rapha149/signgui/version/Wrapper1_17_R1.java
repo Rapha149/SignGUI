@@ -48,7 +48,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
     public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiFunction<Player, String[], String[]> function) {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.b;
-        Location loc = signLoc != null ? signLoc : getLocation(player, 1);
+        Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
         TileEntitySign sign = new TileEntitySign(pos, null);

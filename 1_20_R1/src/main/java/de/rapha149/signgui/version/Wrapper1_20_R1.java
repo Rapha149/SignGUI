@@ -69,9 +69,8 @@ public class Wrapper1_20_R1 implements VersionWrapper {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.c;
 
-        if (NETWORK_MANAGER_FIELD == null) {
+        if (NETWORK_MANAGER_FIELD == null)
             throw new IllegalStateException("Unable to find NetworkManager field in PlayerConnection class.");
-        }
         if (!NETWORK_MANAGER_FIELD.canAccess(conn)) {
             NETWORK_MANAGER_FIELD.setAccessible(true);
             if (!NETWORK_MANAGER_FIELD.canAccess(conn)) {
@@ -79,19 +78,19 @@ public class Wrapper1_20_R1 implements VersionWrapper {
             }
         }
 
-        Location loc = signLoc != null ? signLoc : getLocation(player, -63);
+        Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
         TileEntitySign sign = new TileEntitySign(pos, null);
-        SignText signText = sign.a(true); // flag = front/back of sign
-        signText.a(EnumColor.valueOf(color.toString()));
-        for (int i = 0; i < lines.length; i++) {
-            signText.a(i, IChatBaseComponent.a(lines[i]));
-        }
+        SignText signText = sign.a(true) // flag = front/back of sign
+                .a(EnumColor.valueOf(color.toString()));
+        for (int i = 0; i < lines.length; i++)
+            signText = signText.a(i, IChatBaseComponent.a(lines[i]));
+        sign.a(signText, true);
 
         player.sendBlockChange(loc, type.createBlockData());
         conn.a(sign.j());
-        conn.a(new PacketPlayOutOpenSignEditor(pos, true));
+        conn.a(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign
 
         NetworkManager manager;
         try {
@@ -113,9 +112,10 @@ public class Wrapper1_20_R1 implements VersionWrapper {
                             String[] response = function.apply(player, updateSign.d());
                             if (response != null) {
                                 String[] newLines = Arrays.copyOf(response, 4);
-                                for (int i = 0; i < newLines.length; i++) {
-                                    signText.a(i, IChatBaseComponent.a(newLines[i]));
-                                }
+                                SignText newSignText = sign.a(true);
+                                for (int i = 0; i < newLines.length; i++)
+                                    newSignText = newSignText.a(i, IChatBaseComponent.a(newLines[i]));
+                                sign.a(newSignText, true);
                                 conn.a(sign.j());
                                 conn.a(new PacketPlayOutOpenSignEditor(pos, true));
                             } else {
