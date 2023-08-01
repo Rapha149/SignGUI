@@ -26,6 +26,20 @@ Therefore I included a personal access token in the url so you don't have to dea
 
 <details>
 <summary>
+    <h4>Shorter version</h4>
+</summary>
+
+If you want to use a shorter version, copy this and remove the space character.
+```xml
+<repository>
+    <id>rapha149-repo</id>
+    <url>https://rapha149-robot:ghp_ 5DzL4kgkb4uQ9FmuK1TrG89gfr3UTY1qqh6h@maven.pkg.github.com/Rapha149/*</url>
+</repository>
+```
+</details>
+
+<details>
+<summary>
     <h4>Alternative</h4>
 </summary>
 
