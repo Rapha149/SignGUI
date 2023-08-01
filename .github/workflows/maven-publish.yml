@@ -35,3 +35,4 @@ jobs:
       with:
         folder: api/target/site/apidocs
         branch: javadoc
+        target-folder: javadoc
