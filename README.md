@@ -29,7 +29,7 @@ Therefore I included a personal access token in the url so you don't have to dea
     <h4>Shorter version</h4>
 </summary>
 
-If you want to use a shorter version, copy this and remove the space character.
+If you want to use a shorter version, copy this and remove the space character after `ghp_`.
 ```xml
 <repository>
     <id>rapha149-repo</id>
