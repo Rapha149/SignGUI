@@ -5,10 +5,15 @@
 
   <servers>
     <server>
-      <id>maven-test</id>
-      <username>rapha149</username>
+      <id>maven-publish</id>
+      <username>${env.GITHUB_ACTOR}</username>
+      <password>${env.GITHUB_TOKEN}</password>
+    </server>
+    <server>
+      <id>maven-read</id>
+      <username>rapha149-robot</username>
       <!-- Public token with `read:packages` scope -->
-      <password>&#103;&#104;&#112;&#95;&#81;&#118;&#70;&#84;&#67;&#74;&#82;&#104;&#106;&#82;&#56;&#76;&#78;&#72;&#79;&#79;&#103;&#104;&#68;&#72;&#89;&#84;&#82;&#99;&#114;&#67;&#65;&#97;&#85;&#57;&#49;&#79;&#81;&#117;&#110;&#82;</password>
+      <password>&#103;&#104;&#112;&#95;&#81;&#73;&#100;&#56;&#81;&#57;&#101;&#104;&#122;&#113;&#51;&#101;&#68;&#112;&#111;&#55;&#97;&#50;&#82;&#88;&#107;&#48;&#116;&#57;&#107;&#73;&#72;&#107;&#108;&#104;&#49;&#110;&#103;&#90;&#106;&#72;</password>
     </server>
   </servers>
 </settings>
