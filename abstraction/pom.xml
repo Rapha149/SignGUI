@@ -7,7 +7,7 @@
     <parent>
         <artifactId>signgui-parent</artifactId>
         <groupId>de.rapha149.signgui</groupId>
-        <version>1.9.3-SNAPSHOT</version>
+        <version>1.9.3</version>
     </parent>
 
     <artifactId>signgui-abstraction</artifactId>
