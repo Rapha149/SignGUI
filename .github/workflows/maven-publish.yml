@@ -25,6 +25,6 @@ jobs:
       run: mvn -B package javadoc:javadoc --file pom.xml
 
     - name: Publish package
-      run: mvn -B deploy
+      run: mvn -B deploy -s settings.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
