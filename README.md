@@ -8,7 +8,7 @@ Put the following in your `pom.xml`:
 ```xml
 <repository>
     <id>rapha149-repo</id>
-    <url>https://rapha149-robot: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@maven.pkg.github.com/Rapha149/*</url>
+    <url>https://rapha149-robot:&#103;&#104;&#112;&#95;&#53;&#68;&#122;&#76;&#52;&#107;&#103;&#107;&#98;&#52;&#117;&#81;&#57;&#70;&#109;&#117;&#75;&#49;&#84;&#114;&#71;&#56;&#57;&#103;&#102;&#114;&#51;&#85;&#84;&#89;&#49;&#113;&#113;&#104;&#54;&#104;@maven.pkg.github.com/Rapha149/*</url>
 </repository>
 ```
 ```xml
@@ -17,6 +17,18 @@ Put the following in your `pom.xml`:
     <artifactId>signgui</artifactId>
     <version>1.9.3</version>
 </dependency>
+```
+
+### Length of the repo url
+
+I'm aware of the fact that the repository url is very long. That is because Github doesn't allow public access to packages and users have to authenticate themselves.
+Therefore I included a personal access token in the url so you don't have to deal with that. And because Github automatically revokes all personal access tokens found in commits, it's encoded and even longer.  
+If you already have a Github personal access token defined (e.g. in your `~/.m2/settings.xml`), you can use this shorter version:
+```xml
+<repository>
+    <id>rapha149-repo</id>
+    <url>https://maven.pkg.github.com/Rapha149/*</url>
+</repository>
 ```
 
 ## Usage
