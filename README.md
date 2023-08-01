@@ -1,25 +1,23 @@
-# SignGUI [![](https://jitpack.io/v/Rapha149/SignGUI.svg)](https://jitpack.io/#Rapha149/SignGUI)
+# SignGUI [![Build](https://github.com/Rapha149/SignGUI/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/Rapha149/SignGUI/actions/workflows/maven-publish.yml) [![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://rapha149.github.io/SignGUI/javadoc/)
 An api to get input text via a sign in Minecraft.  
-The api supports the Minecraft versions from `1.8` to `1.18.2`.
+The api supports the Minecraft versions from `1.8` to `1.20.1`.
 
 ## Integration
 
 Put the following in your `pom.xml`:
 ```xml
 <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
+    <id>rapha149-repo</id>
+    <url>https://rapha149-robot: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@maven.pkg.github.com/Rapha149/*</url>
 </repository>
 ```
 ```xml
 <dependency>
-    <groupId>com.github.Rapha149.SignGUI</groupId>
+    <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui</artifactId>
-    <version>v1.9.3</version>
+    <version>1.9.3</version>
 </dependency>
 ```
-
-### [Javadoc](https://javadoc.jitpack.io/com/github/Rapha149/SignGUI/signgui/v1.7/javadoc/de/rapha149/signgui/package-summary.html)  
 
 ## Usage
 To open a sign editor gui for a player, do the following:
@@ -40,40 +38,7 @@ new SignGUI()
     }).open(player);
 ```
 You don't have to call all methods. Only `onFinish` and `open` are mandatory.  
-Here is the explanation of the different methods:
-
-#### `lines(String... lines)`
-Sets the lines to show when the sign is opened. You don't have to pass 4 strings. The default is 4 empty lines. You can pass `null` for an empty line.
-
-#### `line(int index, String line)`
-Sets the line at the specific index. The index has to be between 0 and 3. You can pass `null` for an empty line.
-
-#### `type(Material type)`
-Sets the type of the sign. The default is OAK_SIGN.
-
-#### `color(DyeColor color)`
-Sets the color of the text. The default is BLACK. You can also use color codes to color your text. The cursor will be always in the given color, however. The returned lines will not be colored in this color.
-
-#### `stripColor()`
-Executes `stripColor(true)`
-
-#### `stripColor(true)`
-If enabled, the returned lines will not have any colors. Colors stated by the plugin and by players will be stripped (Players can use color codes by pasting a `§`)
-
-#### `signLocation(Location)`
-Sets the location of the sign. Default is a few blocks behind the player.
-
-#### `onFinish(Function<String[], String[]>`
-Same as `onFinish(BiFunction<Player, String[], String[]>` but without the player.  
-Overrides `onFinish(BiFunction<Player, String[], String[]>`
-
-#### `onFinish(BiFunction<Player, String[], String[]>`
-Sets the function which will be executed when the player finishes editing. You can return `null` or new lines. If you return new lines, the sign editor will be opened with these lines again.  
-Overrides `onFinish(Function<String[], String[]>`  
-Please note that due to packet listening the function will be executed asynchronously. If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a Bukkit task.
-
-#### `open(Player player)`
-Opens the sign editor for the player. You can call this method multiple times.
+An explanation for the different methods can be found on the [Javadoc](https://rapha149.github.io/SignGUI/javadoc/)
 
 ## Credits
 This project structure was inspired by WesJD's [AnvilGUI](https://github.com/WesJD/AnvilGUI) and I used some code from Cleymax's [SignGUI](https://github.com/Cleymax/SignGUI).
