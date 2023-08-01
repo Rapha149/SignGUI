@@ -31,10 +31,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Publish javadoc
-      uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        javadoc-branch: javadoc
-        java-version: 17
-        project: maven
-        javadoc-source-folder: api/target/site/apidocs
+        folder: api/target/site/apidocs
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: javadoc
