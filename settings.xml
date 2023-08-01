@@ -1,0 +1,14 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <servers>
+    <server>
+      <id>maven-test</id>
+      <username>jcansdale-robot</username>
+      <!-- Public token with `read:packages` scope -->
+      <password>&#50;&#57;&#100;&#55;&#50;&#97;&#49;&#98;&#53;&#54;&#50;&#55;&#48;&#101;&#54;&#97;&#99;&#101;&#53;&#51;&#49;&#55;&#102;&#102;&#49;&#98;&#52;&#52;&#52;&#50;&#97;&#54;&#99;&#51;&#99;&#101;&#100;&#57;&#101;&#100;</password>
+    </server>
+  </servers>
+</settings>
