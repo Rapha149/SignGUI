@@ -1,4 +1,4 @@
-name: Publish to Github Packages
+name: Publish package and javadoc
 
 on:
   release:
@@ -10,7 +10,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -34,5 +34,4 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: api/target/site/apidocs
-        token: ${{ secrets.GITHUB_TOKEN }}
         branch: javadoc
