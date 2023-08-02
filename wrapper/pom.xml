@@ -10,7 +10,7 @@
         <version>1.9.3</version>
     </parent>
 
-    <artifactId>signgui-abstraction</artifactId>
+    <artifactId>signgui-wrapper</artifactId>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>

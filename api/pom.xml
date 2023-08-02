@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>de.rapha149.signgui</groupId>
-            <artifactId>signgui-abstraction</artifactId>
+            <artifactId>signgui-wrapper</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>

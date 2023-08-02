@@ -1,216 +1,112 @@
 package de.rapha149.signgui;
 
 import de.rapha149.signgui.version.VersionWrapper;
-import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SignGUI {
 
-    private static final VersionWrapper WRAPPER;
-    private static final List<Material> signTypes;
-    private static final String availableSignTypes;
+    static final VersionWrapper WRAPPER;
+    static final String availableSignTypes;
 
     static {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
         try {
-            WRAPPER = (VersionWrapper) Class.forName(VersionWrapper.class.getPackage().getName() + ".Wrapper" + version).newInstance();
-        } catch (IllegalAccessException | InstantiationException exception) {
+            WRAPPER = (VersionWrapper) Class.forName(VersionWrapper.class.getPackage().getName() + ".Wrapper" + version).getDeclaredConstructor().newInstance();
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
+                 InvocationTargetException exception) {
             throw new IllegalStateException("Failed to load support for server version " + version, exception);
         } catch (ClassNotFoundException exception) {
             throw new IllegalStateException("SignGUI does not support the server version \"" + version + "\"", exception);
         }
 
-        signTypes = WRAPPER.getSignTypes();
-        availableSignTypes = signTypes.stream().map(Material::toString).collect(Collectors.joining(", "));
+        availableSignTypes = WRAPPER.getSignTypes().stream().map(Material::toString).collect(Collectors.joining(", "));
     }
 
     /**
-     * The lines to show.
-     */
-    private String[] lines;
-
-    /**
-     * The sign type.
-     */
-    private Material type;
-
-    /**
-     * The color of the sign (1.14+)
-     */
-    private DyeColor color;
-
-    /**
-     * If enabled, the returned lines will not have any colors.
-     */
-    private boolean stripColor;
-
-    /**
-     * The location where the sign should be placed. Can be null for default.
-     */
-    private Location signLoc;
-
-    /**
-     * The {@link java.util.function.BiFunction} which will be executed when the editing is finished. See {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.BiFunction)}
-     */
-    private BiFunction<Player, String[], String[]> function;
-
-    /**
-     * Constructs a new SignGUI.
-     */
-    public SignGUI() {
-        lines = new String[4];
-        type = WRAPPER.getDefaultType();
-        color = DyeColor.BLACK;
-        stripColor = false;
-    }
-
-    /**
-     * Sets the lines that are shown on the sign.
+     * Constructs a new SignGUIBuilder.
      *
-     * @param lines The lines, may be less than 4.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
+     * @return The new {@link de.rapha149.signgui.SignGUIBuilder} instance
      */
-    public SignGUI lines(String... lines) {
-        this.lines = Arrays.copyOf(lines, 4);
-        return this;
+    public static SignGUIBuilder builder() {
+        return new SignGUIBuilder();
     }
 
-    /**
-     * Sets a specific line that is shown on the sign.
-     *
-     * @param index The index of the line.
-     * @param line  The line.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     * @throws java.lang.IllegalArgumentException If the index is below 0 or above 4.
-     */
-    public SignGUI line(int index, String line) {
-        Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
-        lines[index] = line;
-        return this;
-    }
+    private final String[] lines;
+    private final Material type;
+    private final DyeColor color;
+    private final Location signLoc;
+    private final SignGUIFinishHandler handler;
+    private final boolean callHandlerSynchronously;
+    private final JavaPlugin plugin;
 
     /**
-     * Sets the type of the sign.
-     *
-     * @param type The type. Must be a sign type.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
+     * Constructs a new SignGUI. Use {@link de.rapha149.signgui.SignGUI#builder()} to get a new instance.
      */
-    public SignGUI type(Material type) {
-        Validate.notNull(type, "Type cannot be null");
-        Validate.isTrue(signTypes.contains(type), type + " is not a sign type. Available sign types: " + availableSignTypes);
+    SignGUI(String[] lines, Material type, DyeColor color, Location signLoc, SignGUIFinishHandler handler, boolean callHandlerSynchronously, JavaPlugin plugin) {
+        this.lines = lines;
         this.type = type;
-        return this;
-    }
-
-    /**
-     * Sets the color of the sign (1.14+)
-     *
-     * @param color The new color
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     */
-    public SignGUI color(DyeColor color) {
-        Validate.notNull(color, "The color cannot be null");
         this.color = color;
-        return this;
-    }
-
-    /**
-     * Sets stripColor to true. See {@link SignGUI#stripColor(boolean)}
-     *
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     */
-    public SignGUI stripColor() {
-        stripColor = true;
-        return this;
-    }
-
-    /**
-     * If enabled, the returned lines will not have any colors.
-     *
-     * @param stripColor If the colors should be stripped
-     *
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     */
-    public SignGUI stripColor(boolean stripColor) {
-        this.stripColor = stripColor;
-        return this;
-    }
-
-    /**
-     * Sets the location where the sign should be placed. Can be null for default. The default location is behind the player.
-     * The sign will only be visible for the player. It won't be placed on the server or be visible for other players.
-     * Warning: Placing the sign out of the chunks visible for the player will cause problems to occur. Preferably place it in the same chunk as the player.
-     *
-     * @param signLoc The new location.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     */
-    public SignGUI signLocation(Location signLoc) {
         this.signLoc = signLoc;
-        return this;
-    }
-
-
-    /**
-     * Sets the {@link java.util.function.Function} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
-     * Will override {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.BiFunction)}
-     * <p>
-     * Please note that due to packet listening the function will be executed asynchronously.
-     * If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a Bukkit task.
-     *
-     * @param function The function.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     */
-    public SignGUI onFinish(Function<String[], String[]> function) {
-        Validate.notNull(function, "The function cannot be null.");
-        this.function = (player, lines) -> function.apply(lines);
-        return this;
-    }
-
-    /**
-     * Sets the {@link java.util.function.BiFunction} which will be executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
-     * Will override {@link de.rapha149.signgui.SignGUI#onFinish(java.util.function.Function)}
-     * <p>
-     * Please note that due to packet listening the function will be executed asynchronously.
-     * If you want to execute synchronous actions such as inventory handling or block placing, you have to do that in a Bukkit task.
-     *
-     * @param function The function.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
-     */
-    public SignGUI onFinish(BiFunction<Player, String[], String[]> function) {
-        Validate.notNull(function, "The function cannot be null.");
-        this.function = function;
-        return this;
+        this.handler = handler;
+        this.callHandlerSynchronously = callHandlerSynchronously;
+        this.plugin = plugin;
     }
 
     /**
      * Opens the sign gui for the player.
      *
-     * @param player The player.
-     * @return The {@link de.rapha149.signgui.SignGUI} instance
+     * @param player The player to open the gui for.
+     * @throws de.rapha149.signgui.SignGUIException If an error occurs while opening the gui.
      */
-    public SignGUI open(Player player) {
+    public void open(Player player) throws SignGUIException {
+        // TODO check if player already has an open sign gui
+
         Validate.notNull(player, "The player cannot be null");
-        Validate.notNull(type, "Type cannot be null");
-        Validate.isTrue(signTypes.contains(type), type + " is not a sign type. Available sign types: " + availableSignTypes);
-        Validate.notNull(color, "The color cannot be null");
-        Validate.notNull(function, "The function cannot be null.");
+
         try {
-            WRAPPER.openSignEditor(player, lines, type, color, signLoc,
-                    stripColor ? (p, lines) -> function.apply(p, Arrays.stream(lines).map(ChatColor::stripColor).toArray(String[]::new)) : function);
+            WRAPPER.openSignEditor(player, lines, type, color, signLoc, (signEditor, resultLines) -> {
+                Runnable runnable = () -> {
+                    List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));
+                    if (actions.stream().anyMatch(action -> action.execute(this, signEditor, player)))
+                        WRAPPER.closeSignEditor(player, signEditor);
+                };
+
+                if (callHandlerSynchronously)
+                    Bukkit.getScheduler().runTask(plugin, runnable);
+                else
+                    runnable.run();
+            });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SignGUIException("Failed to open sign gui", e);
         }
-        return this;
+    }
+
+    /**
+     * Sets the lines that are shown on the sign.
+     * This is called when {@link de.rapha149.signgui.SignGUIAction#displayNewLines(String...)} is returned as an action after the player has finished editing.
+     *
+     * @param lines The lines, must be exactly 4.
+     * @throws java.lang.IllegalArgumentException If lines is null or not exactly 4 lines.
+     * @throws de.rapha149.signgui.SignGUIException If an error occurs while setting the lines.
+     */
+    void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+        Validate.notNull(lines, "The lines cannot be null");
+        Validate.isTrue(lines.length == 4, "The lines must have a length of 4");
+
+        try {
+            WRAPPER.displayNewLines(player, signEditor, lines);
+        } catch (Exception e) {
+            throw new SignGUIException("Failed to open sign gui", e);
+        }
     }
 }

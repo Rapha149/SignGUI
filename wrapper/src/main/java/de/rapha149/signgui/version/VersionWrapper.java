@@ -1,12 +1,14 @@
 package de.rapha149.signgui.version;
 
+import de.rapha149.signgui.SignEditor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Interface for version wrappers
@@ -31,15 +33,32 @@ public interface VersionWrapper {
      * @param type     The type of the sign.
      * @param color    The color of the sign (1.14+)
      * @param signLoc  The location where the sign should be placed. Can be null for default.
-     * @param function The {@link java.util.function.BiFunction} which is executed when the editing is finished. If new lines are returned, the new lines are opened to edit.
+     * @param onFinish The {@link java.util.function.BiConsumer} which is called when the player finished editing the sign.
      */
-    void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiFunction<Player, String[], String[]> function) throws Exception;
+    void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws Exception;
 
     /**
-     * Get the location where the sign should be placed for the player.
+     * Called when the lines of a sign should be updated.
+     *
+     * @param player The player to whom the sign was shown to.
+     * @param signEditor The sign editor.
+     * @param lines The new lines.
+     */
+    void displayNewLines(Player player, SignEditor signEditor, String[] lines);
+
+    /**
+     * Called when the sign editor should be closed.
+     *
+     * @param player The player to whom the sign was shown to.
+     * @param signEditor The sign editor.
+     */
+    void closeSignEditor(Player player, SignEditor signEditor);
+
+    /**
+     * Get the default location where the sign should be placed for the player.
      *
      * @param player The player.
-     * @return The location of the sign (default y = 1 or y = -63)
+     * @return The location of the sign.
      */
     default Location getDefaultLocation(Player player) {
         Location loc = player.getLocation();
