@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>signgui-parent</artifactId>
-        <groupId>de.rapha149.signgui</groupId>
-        <version>2.0</version>
+        <groupId>io.github.rapha149.signgui</groupId>
+        <version>2.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,7 +23,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>de.rapha149.signgui</groupId>
+            <groupId>io.github.rapha149.signgui</groupId>
             <artifactId>signgui-wrapper</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>

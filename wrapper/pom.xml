@@ -6,8 +6,8 @@
 
     <parent>
         <artifactId>signgui-parent</artifactId>
-        <groupId>de.rapha149.signgui</groupId>
-        <version>2.0</version>
+        <groupId>io.github.rapha149.signgui</groupId>
+        <version>2.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>signgui-wrapper</artifactId>
