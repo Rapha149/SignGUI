@@ -64,13 +64,12 @@ public class SignGUI {
 
     /**
      * Opens the sign gui for the player.
+     * Note: if there already is a sign gui open for the player, it will be closed and the {@link de.rapha149.signgui.SignGUIFinishHandler} will not be called.
      *
      * @param player The player to open the gui for.
      * @throws de.rapha149.signgui.SignGUIException If an error occurs while opening the gui.
      */
     public void open(Player player) throws SignGUIException {
-        // TODO check if player already has an open sign gui
-
         Validate.notNull(player, "The player cannot be null");
 
         try {
