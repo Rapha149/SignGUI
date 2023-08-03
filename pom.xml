@@ -84,8 +84,10 @@
                                 <goal>sign</goal>
                             </goals>
                             <configuration>
-                                <keyname>0x03DCC54E</keyname>
-                                <passphraseServerId>0x03DCC54E</passphraseServerId>
+                                <!--suppress MavenModelInspection -->
+                                <keyname>${gpg.keyname}</keyname>
+                                <!--suppress MavenModelInspection -->
+                                <passphraseServerId>${gpg.keyname}</passphraseServerId>
                             </configuration>
                         </execution>
                     </executions>
