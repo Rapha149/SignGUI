@@ -7,7 +7,7 @@
     <groupId>io.github.rapha149.signgui</groupId>
     <artifactId>signgui-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1</version>
 
     <modules>
         <module>api</module>
@@ -75,7 +75,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.5</version>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
@@ -85,6 +85,7 @@
                             </goals>
                             <configuration>
                                 <keyname>0x03DCC54E</keyname>
+                                <passphraseServerId>0x03DCC54E</passphraseServerId>
                             </configuration>
                         </execution>
                     </executions>
@@ -92,7 +93,7 @@
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.7</version>
+                    <version>1.6.13</version>
                     <extensions>true</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>
