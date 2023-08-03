@@ -7,50 +7,17 @@ The api supports the Minecraft versions from `1.8` to `1.20.1`.
 Put the following in your `pom.xml`:
 ```xml
 <repository>
-    <id>rapha149-repo</id>
-    <url>https://rapha149-robot:&#103;&#104;&#112;&#95;&#53;&#68;&#122;&#76;&#52;&#107;&#103;&#107;&#98;&#52;&#117;&#81;&#57;&#70;&#109;&#117;&#75;&#49;&#84;&#114;&#71;&#56;&#57;&#103;&#102;&#114;&#51;&#85;&#84;&#89;&#49;&#113;&#113;&#104;&#54;&#104;@maven.pkg.github.com/Rapha149/*</url>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
 </repository>
 ```
 ```xml
 <dependency>
-    <groupId>de.rapha149.signgui</groupId>
-    <artifactId>signgui</artifactId>
-    <version>2.0</version>
+    <groupId>com.github.Rapha149</groupId>
+    <artifactId>SignGUI</artifactId>
+    <version>v2.0</version>
 </dependency>
 ```
-
-### Length of the repo url
-
-I'm aware of the fact that the repository url is very long. That is because Github doesn't allow public access to packages and users have to authenticate themselves.
-Therefore I included a personal access token in the url so you don't have to deal with that. And because Github automatically revokes all personal access tokens found in commits, it's encoded and even longer.
-
-<details>
-<summary>
-    <h4>Alternative</h4>
-</summary>
-
-As an alternative, you can also define your personal access token in your `settings.xml` file.
-
-**settings.xml**
-```xml
-<servers>
-    <server>
-        <id>rapha149-repo</id>
-        <username>rapha149-repo</username>
-        <!-- Public token with `read:packages` scope -->
-        <password>&#103;&#104;&#112;&#95;&#53;&#68;&#122;&#76;&#52;&#107;&#103;&#107;&#98;&#52;&#117;&#81;&#57;&#70;&#109;&#117;&#75;&#49;&#84;&#114;&#71;&#56;&#57;&#103;&#102;&#114;&#51;&#85;&#84;&#89;&#49;&#113;&#113;&#104;&#54;&#104;</password>
-    </server>
-</servers>
-```
-**pom.xml**
-```xml
-<repository>
-    <id>rapha149-repo</id>
-    <url>https://maven.pkg.github.com/Rapha149/*</url>
-</repository>
-```
-(The server id and the repository id have to be the same)
-</details>
 
 ## Usage
 To open a sign editor gui for a player, do the following:
