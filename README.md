@@ -62,11 +62,11 @@ SignGUI.builder()
     .setColor(DyeColor.YELLOW) // set the sign color
     .setHandler((p, result) -> { // set the handler/listener (called when the player finishes editing)
         String line0 = result.getLine(0); // get a speficic line, starting index is 0
-        String line1 = result.getLineWithoutColor1); // get a specific line without color codes
+        String line1 = result.getLineWithoutColor(1); // get a specific line without color codes
         String[] lines = result.getLines(); // get all lines
         String[] linesWithoutColor = result.getLinesWithoutColor(); // get all lines without color codes
 
-        if (line1.isEmpty() {
+        if (line1.isEmpty()) {
             // The user has not entered anything on line 2, so we open the sign again
             return List.of(SignGUIAction.displayNewLines("§6Line 1", null, "§6Line 3", "Line 4"));
         }
@@ -74,13 +74,13 @@ SignGUI.builder()
         if (line1.equals("inv")) {
             // close the sign and open an inventory
             return List.of(
-                SignGUIAction.openInventory(Bukkit.createInventory(player, 27)),
+                SignGUIAction.openInventory(this, Bukkit.createInventory(player, 27)), // "this" = your JavaPlugin instance
                 SignGUIAction.run(() -> player.sendMessage("Inventory opened!"))
             );
         }
 
         // Just close the sign by not returning any actions
-        return Collections.emptylist();
+        return Collections.emptyList();
     }).build().open(player);
 ```
 
