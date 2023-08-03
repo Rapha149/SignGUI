@@ -126,6 +126,7 @@ public class SignGUIBuilder {
      * @return The SignGUI.
      */
     public SignGUI build() {
+        Validate.notNull(handler, "handler must be set");
         return new SignGUI(lines, type, color, loc, handler, callHandlerSynchronously, plugin);
     }
 }
