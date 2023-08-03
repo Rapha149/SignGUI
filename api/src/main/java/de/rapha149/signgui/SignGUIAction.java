@@ -19,19 +19,9 @@ public interface SignGUIAction {
      * Called to execute the actions after the player finished editing the sign.
      * @param gui The {@link de.rapha149.signgui.SignGUI} instance
      * @param player The player who edited the sign
-     * @return True if the sign gui should be closed, false otherwise.
+     * @return true if the sign gui should be kept open, false otherwise
      */
     boolean execute(SignGUI gui, SignEditor signEditor, Player player);
-
-    /**
-     * Creates a new SignGUIAction that closes the sign gui. This is the default action.
-     * Note: when this action is included in the list returned by {@link de.rapha149.signgui.SignGUIFinishHandler#onFinish(Player, SignGUIResult)} the sign gui will be closed regardless of the position of this action in the list.
-     *
-     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
-     */
-    static SignGUIAction close() {
-        return (gui, signEditor, player) -> true;
-    }
 
     /**
      * Creates a new SignGUIAction that opens the sign gui again with the new lines.
@@ -45,7 +35,7 @@ public interface SignGUIAction {
         return (gui, signEditor, player) -> {
             gui.displayNewLines(player, signEditor, Arrays.copyOf(lines, 4));
             gui.open(player);
-            return false;
+            return true;
         };
     }
 

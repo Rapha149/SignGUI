@@ -4,6 +4,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -95,6 +96,7 @@ public class SignGUIBuilder {
 
     /**
      * Sets the handler that is called when the player finishes the sign gui.
+     * See {@link de.rapha149.signgui.SignGUIFinishHandler#onFinish(Player, SignGUIResult)} for more information.
      *
      * @param handler The handler.
      * @return The {@link de.rapha149.signgui.SignGUIBuilder} instance
