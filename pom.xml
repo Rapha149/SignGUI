@@ -75,12 +75,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <distributionManagement>
-        <repository>
-        <id>github</id>
-        <name>GitHub Packages</name>
-        <url>https://maven.pkg.github.com/Rapha149/SignGUI</url>
-        </repository>
-    </distributionManagement>
 </project>
