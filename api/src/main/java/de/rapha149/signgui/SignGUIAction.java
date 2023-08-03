@@ -34,7 +34,6 @@ public interface SignGUIAction {
 
         return (gui, signEditor, player) -> {
             gui.displayNewLines(player, signEditor, Arrays.copyOf(lines, 4));
-            gui.open(player);
             return true;
         };
     }
