@@ -1,8 +1,10 @@
 package de.rapha149.signgui.version;
 
+import de.rapha149.signgui.SignEditor;
+import de.rapha149.signgui.SignGUIChannelHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.MessageToMessageDecoder;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -14,35 +16,27 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
 public class Wrapper1_14_R1 implements VersionWrapper {
 
     private final boolean IS_1_14_1 = Pattern.compile("1\\.14\\.\\d").matcher(Bukkit.getBukkitVersion()).find();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Material getDefaultType() {
         return Material.OAK_SIGN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Material> getSignTypes() {
         return Arrays.asList(Material.OAK_SIGN, Material.BIRCH_SIGN, Material.SPRUCE_SIGN, Material.JUNGLE_SIGN,
                 Material.ACACIA_SIGN, Material.DARK_OAK_SIGN);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiFunction<Player, String[], String[]> function) throws NoSuchFieldException, IllegalAccessException {
+    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws NoSuchFieldException, IllegalAccessException {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
@@ -59,39 +53,76 @@ public class Wrapper1_14_R1 implements VersionWrapper {
         for (int i = 0; i < lines.length; i++)
             sign.a(i, new ChatComponentText(lines[i] != null ? lines[i] : ""));
 
-        player.sendBlockChange(loc, type.createBlockData());
-        conn.sendPacket(sign.getUpdatePacket());
-        conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
-
+        boolean schedule = false;
         ChannelPipeline pipeline = conn.networkManager.channel.pipeline();
-        if (pipeline.names().contains("SignGUI"))
-            pipeline.remove("SignGUI");
-        pipeline.addAfter("decoder", "SignGUI", new MessageToMessageDecoder<Packet<?>>() {
-            @Override
-            protected void decode(ChannelHandlerContext chc, Packet<?> packet, List<Object> out) {
-                try {
-                    if (packet instanceof PacketPlayInUpdateSign) {
-                        PacketPlayInUpdateSign updateSign = (PacketPlayInUpdateSign) packet;
-                        if (updateSign.b().equals(pos)) {
-                            String[] response = function.apply(player, updateSign.c());
-                            if (response != null) {
-                                String[] newLines = Arrays.copyOf(response, 4);
-                                for (int i = 0; i < newLines.length; i++)
-                                    sign.a(i, new ChatComponentText(newLines[i] != null ? newLines[i] : ""));
-                                conn.sendPacket(sign.getUpdatePacket());
-                                conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
-                            } else {
-                                pipeline.remove("SignGUI");
-                                player.sendBlockChange(loc, loc.getBlock().getBlockData());
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if (pipeline.names().contains("SignGUI")) {
+            ChannelHandler handler = pipeline.get("SignGUI");
+            if (handler instanceof SignGUIChannelHandler<?>) {
+                SignGUIChannelHandler<?> signGUIHandler = (SignGUIChannelHandler<?>) handler;
+                signGUIHandler.close();
+                schedule = signGUIHandler.getBlockPosition().equals(pos);
+            }
+
+            if (pipeline.names().contains("SignGUI"))
+                pipeline.remove("SignGUI");
+        }
+
+        Runnable runnable = () -> {
+            player.sendBlockChange(loc, type.createBlockData());
+            conn.sendPacket(sign.getUpdatePacket());
+            conn.sendPacket(new PacketPlayOutOpenSignEditor(pos));
+
+            SignEditor signEditor = new SignEditor(sign, loc, pos, pipeline);
+            pipeline.addAfter("decoder", "SignGUI", new SignGUIChannelHandler<Packet<?>>() {
+
+                @Override
+                public Object getBlockPosition() {
+                    return pos;
                 }
 
-                out.add(packet);
-            }
-        });
+                @Override
+                public void close() {
+                    closeSignEditor(player, signEditor);
+                }
+
+                @Override
+                protected void decode(ChannelHandlerContext chc, Packet<?> packet, List<Object> out) {
+                    try {
+                        if (packet instanceof PacketPlayInUpdateSign) {
+                            PacketPlayInUpdateSign updateSign = (PacketPlayInUpdateSign) packet;
+                            if (updateSign.b().equals(pos))
+                                onFinish.accept(signEditor, updateSign.c());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    out.add(packet);
+                }
+            });
+        };
+
+        if (schedule)
+            SCHEDULER.schedule(runnable, 200, TimeUnit.MILLISECONDS);
+        else
+            runnable.run();
+    }
+
+    @Override
+    public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+        TileEntitySign sign = (TileEntitySign) signEditor.getSign();
+        for (int i = 0; i < lines.length; i++)
+            sign.a(i, new ChatComponentText(lines[i] != null ? lines[i] : ""));
+
+        PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+        conn.sendPacket(sign.getUpdatePacket());
+        conn.sendPacket(new PacketPlayOutOpenSignEditor((BlockPosition) signEditor.getBlockPosition()));
+    }
+
+    @Override
+    public void closeSignEditor(Player player, SignEditor signEditor) {
+        Location loc = signEditor.getLocation();
+        signEditor.getPipeline().remove("SignGUI");
+        player.sendBlockChange(loc, loc.getBlock().getBlockData());
     }
 }
