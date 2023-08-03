@@ -77,7 +77,7 @@ public class SignGUI {
             WRAPPER.openSignEditor(player, lines, type, color, signLoc, (signEditor, resultLines) -> {
                 Runnable runnable = () -> {
                     List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));
-                    if (actions.stream().anyMatch(action -> action.execute(this, signEditor, player)))
+                    if (actions == null || actions.isEmpty() || actions.stream().anyMatch(action -> action.execute(this, signEditor, player)))
                         WRAPPER.closeSignEditor(player, signEditor);
                 };
 
