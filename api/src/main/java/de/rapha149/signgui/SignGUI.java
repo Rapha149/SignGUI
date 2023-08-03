@@ -1,5 +1,6 @@
 package de.rapha149.signgui;
 
+import de.rapha149.signgui.SignGUIAction.SignGUIActionInfo;
 import de.rapha149.signgui.version.VersionWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -64,6 +65,7 @@ public class SignGUI {
 
     /**
      * Opens the sign gui for the player.
+     * <p>
      * Note: if there already is a sign gui open for the player, it will be closed and the {@link de.rapha149.signgui.SignGUIFinishHandler} will not be called.
      *
      * @param player The player to open the gui for.
@@ -75,9 +77,36 @@ public class SignGUI {
         try {
             WRAPPER.openSignEditor(player, lines, type, color, signLoc, (signEditor, resultLines) -> {
                 Runnable runnable = () -> {
+                    Runnable close = () -> WRAPPER.closeSignEditor(player, signEditor);
                     List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));
-                    if (actions == null || actions.isEmpty() || actions.stream().noneMatch(action -> action.execute(this, signEditor, player)))
-                        WRAPPER.closeSignEditor(player, signEditor);
+
+                    if (actions == null || actions.isEmpty()) {
+                        close.run();
+                        return;
+                    }
+
+                    boolean keepOpen = false;
+                    for (SignGUIAction action : actions) {
+                        SignGUIActionInfo info = action.getInfo();
+                        for (SignGUIAction otherAction : actions) {
+                            if (action == otherAction)
+                                continue;
+
+                            SignGUIActionInfo otherInfo = otherAction.getInfo();
+                            if (info.isConflicting(otherInfo)) {
+                                close.run();
+                                throw new SignGUIException("The actions " + info.getName() + " and " + otherInfo.getName() + " are conflicting");
+                            }
+                        }
+
+                        if (info.isKeepOpen())
+                            keepOpen = true;
+                    }
+
+                    if (!keepOpen)
+                        close.run();
+                    for (SignGUIAction action : actions)
+                        action.execute(this, signEditor, player);
                 };
 
                 if (callHandlerSynchronously)
@@ -95,7 +124,7 @@ public class SignGUI {
      * This is called when {@link de.rapha149.signgui.SignGUIAction#displayNewLines(String...)} is returned as an action after the player has finished editing.
      *
      * @param lines The lines, must be exactly 4.
-     * @throws java.lang.IllegalArgumentException If lines is null or not exactly 4 lines.
+     * @throws java.lang.IllegalArgumentException   If lines is null or not exactly 4 lines.
      * @throws de.rapha149.signgui.SignGUIException If an error occurs while setting the lines.
      */
     void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
