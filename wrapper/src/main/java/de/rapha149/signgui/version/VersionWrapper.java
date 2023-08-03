@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * Interface for version wrappers
