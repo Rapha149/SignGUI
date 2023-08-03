@@ -7,12 +7,16 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 
 /**
  * Interface for version wrappers
  */
 public interface VersionWrapper {
+
+    ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(0);
 
     /**
      * @return The default type for the sign. Different between some versions.

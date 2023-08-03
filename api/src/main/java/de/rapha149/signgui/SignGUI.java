@@ -67,6 +67,7 @@ public class SignGUI {
      * Opens the sign gui for the player.
      * <p>
      * Note: if there already is a sign gui open for the player, it will be closed and the {@link de.rapha149.signgui.SignGUIFinishHandler} will not be called.
+     * It is recommended to avoid opening a sign gui for a player that already has one open.
      *
      * @param player The player to open the gui for.
      * @throws de.rapha149.signgui.SignGUIException If an error occurs while opening the gui.

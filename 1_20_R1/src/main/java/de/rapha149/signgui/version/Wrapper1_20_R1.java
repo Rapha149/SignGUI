@@ -1,9 +1,10 @@
 package de.rapha149.signgui.version;
 
 import de.rapha149.signgui.SignEditor;
+import de.rapha149.signgui.SignGUIChannelHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.MessageToMessageDecoder;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.chat.IChatBaseComponent;
@@ -24,6 +25,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 public class Wrapper1_20_R1 implements VersionWrapper {
@@ -79,31 +81,58 @@ public class Wrapper1_20_R1 implements VersionWrapper {
             signText = signText.a(i, IChatBaseComponent.a(lines[i]));
         sign.a(signText, true);
 
-        player.sendBlockChange(loc, type.createBlockData());
-        conn.a(sign.j());
-        conn.a(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign
-
+        boolean schedule = false;
         NetworkManager manager = (NetworkManager) NETWORK_MANAGER_FIELD.get(conn);
         ChannelPipeline pipeline = manager.m.pipeline();
-        if (pipeline.names().contains("SignGUI"))
-            pipeline.remove("SignGUI");
+        if (pipeline.names().contains("SignGUI")) {
+            ChannelHandler handler = pipeline.get("SignGUI");
+            if (handler instanceof SignGUIChannelHandler<?> signGUIHandler) {
+                signGUIHandler.close();
+                schedule = signGUIHandler.getBlockPosition().equals(pos);
+            }
 
-        SignEditor signEditor = new SignEditor(sign, loc, pos, pipeline);
-        pipeline.addAfter("decoder", "SignGUI", new MessageToMessageDecoder<Packet<?>>() {
-            @Override
-            protected void decode(ChannelHandlerContext chc, Packet<?> packet, List<Object> out) {
-                try {
-                    if (packet instanceof PacketPlayInUpdateSign updateSign) {
-                        if (updateSign.a().equals(pos))
-                            onFinish.accept(signEditor, updateSign.d());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (pipeline.names().contains("SignGUI"))
+                pipeline.remove("SignGUI");
+        }
+
+        Runnable runnable = () -> {
+            player.sendBlockChange(loc, type.createBlockData());
+            conn.a(sign.j());
+            conn.a(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign
+
+            SignEditor signEditor = new SignEditor(sign, loc, pos, pipeline);
+            pipeline.addAfter("decoder", "SignGUI", new SignGUIChannelHandler<Packet<?>>() {
+
+                @Override
+                public Object getBlockPosition() {
+                    return pos;
                 }
 
-                out.add(packet);
-            }
-        });
+                @Override
+                public void close() {
+                    closeSignEditor(player, signEditor);
+                }
+
+                @Override
+                protected void decode(ChannelHandlerContext chc, Packet<?> packet, List<Object> out) {
+                    try {
+                        if (packet instanceof PacketPlayInUpdateSign updateSign) {
+                            if (updateSign.a().equals(pos))
+                                onFinish.accept(signEditor, updateSign.d());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    out.add(packet);
+                }
+            });
+        };
+
+        if (schedule)
+            SCHEDULER.schedule(runnable, 200, TimeUnit.MILLISECONDS);
+        else
+            runnable.run();
     }
 
     @Override
