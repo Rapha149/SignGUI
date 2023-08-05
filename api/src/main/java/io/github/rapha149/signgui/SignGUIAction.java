@@ -61,6 +61,7 @@ public interface SignGUIAction {
     static SignGUIAction openInventory(JavaPlugin plugin, Inventory inventory) {
         Validate.notNull(plugin, "The plugin cannot be null");
         Validate.notNull(inventory, "The inventory cannot be null");
+
         return new SignGUIAction() {
 
             private SignGUIActionInfo info = new SignGUIActionInfo("openInventory", false, 1);
@@ -86,6 +87,7 @@ public interface SignGUIAction {
      */
     static SignGUIAction run(Runnable runnable) {
         Validate.notNull(runnable, "The runnable cannot be null");
+
         return new SignGUIAction() {
 
             private SignGUIActionInfo info = new SignGUIActionInfo("run", false, 0);
@@ -98,6 +100,33 @@ public interface SignGUIAction {
             @Override
             public void execute(SignGUI gui, SignEditor signEditor, Player player) {
                 runnable.run();
+            }
+        };
+    }
+
+    /**
+     * Creates a new SignGUIAction that runs a runnable synchronously.
+     *
+     * @param plugin   Your {@link org.bukkit.plugin.java.JavaPlugin} instance
+     * @param runnable The runnable to run
+     * @return The new {@link SignGUIAction} instance
+     */
+    static SignGUIAction runSync(JavaPlugin plugin, Runnable runnable) {
+        Validate.notNull(plugin, "The plugin cannot be null");
+        Validate.notNull(runnable, "The runnable cannot be null");
+        
+        return new SignGUIAction() {
+
+            private SignGUIActionInfo info = new SignGUIActionInfo("runSync", false, 0);
+
+            @Override
+            public SignGUIActionInfo getInfo() {
+                return info;
+            }
+
+            @Override
+            public void execute(SignGUI gui, SignEditor signEditor, Player player) {
+                Bukkit.getScheduler().runTask(plugin, runnable);
             }
         };
     }
