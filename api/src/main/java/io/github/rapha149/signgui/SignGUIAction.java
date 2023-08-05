@@ -14,12 +14,16 @@ import java.util.Arrays;
  */
 public interface SignGUIAction {
 
+    /**
+     * @return The {@link SignGUIActionInfo} instance containing information about this action
+     */
     SignGUIActionInfo getInfo();
 
     /**
      * Called to execute the actions after the player finished editing the sign.
      *
      * @param gui    The {@link SignGUI} instance
+     * @param signEditor The {@link SignEditor} instance containing information relevant to the {@link io.github.rapha149.signgui.version.VersionWrapper}
      * @param player The player who edited the sign
      */
     void execute(SignGUI gui, SignEditor signEditor, Player player);
@@ -114,7 +118,7 @@ public interface SignGUIAction {
     static SignGUIAction runSync(JavaPlugin plugin, Runnable runnable) {
         Validate.notNull(plugin, "The plugin cannot be null");
         Validate.notNull(runnable, "The runnable cannot be null");
-        
+
         return new SignGUIAction() {
 
             private SignGUIActionInfo info = new SignGUIActionInfo("runSync", false, 0);

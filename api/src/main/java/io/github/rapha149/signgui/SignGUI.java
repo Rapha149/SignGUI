@@ -14,6 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The base class of this api. Use {@link SignGUI#builder()} to get a new instance.
+ */
 public class SignGUI {
 
     static final VersionWrapper WRAPPER;
@@ -135,7 +138,7 @@ public class SignGUI {
         try {
             WRAPPER.displayNewLines(player, signEditor, lines);
         } catch (Exception e) {
-            throw new SignGUIException("Failed to open sign gui", e);
+            throw new SignGUIException("Failed to display new lines", e);
         }
     }
 }
