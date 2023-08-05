@@ -12,32 +12,6 @@
 
     <artifactId>signgui</artifactId>
 
-    <!--<name>${project.groupId}:${project.artifactId}</name>
-    <description>An api to get input text via a sign in Minecraft.</description>
-    <url>https://github.com/Rapha149/SignGUI</url>
-
-    <developers>
-        <developer>
-            <name>Rapha149</name>
-            <email>rapha.2626.149@gmail.com</email>
-            <url>https://github.com/Rapha149</url>
-        </developer>
-    </developers>
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3.0</name>
-            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:git:git://github.com/Rapha149/SignGUI.git</connection>
-        <developerConnection>scm:git:ssh://github.com:Rapha149/SignGUI.git</developerConnection>
-        <url>http://github.com/Rapha149/SignGUI/tree/main</url>
-    </scm>-->
-
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
