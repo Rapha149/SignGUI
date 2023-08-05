@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>2.1.1</version>
 
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>${project.groupId}:signgui</name>
     <description>An api to get input text via a sign in Minecraft.</description>
     <url>https://github.com/Rapha149/SignGUI</url>
 
