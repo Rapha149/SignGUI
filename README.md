@@ -16,7 +16,7 @@ Maven dependency:
 ## Usage
 To open a sign editor gui for a player, do the following:
 ```java
-SignGUI.builder()
+SignGUI gui = SignGUI.builder()
     // set lines
     .setLines("§6Line 1", null, "§6Line 3")
 
@@ -59,7 +59,16 @@ SignGUI.builder()
 
         // Just close the sign by not returning any actions
         return Collections.emptyList();
-    }).build().open(player);
+    })
+
+    // build the SignGUI
+    .build();
+
+// open the sign
+gui.open(player);
+
+// you can also open the sign for multiple players
+gui.open(player2);
 ```
 
 You don't have to call all methods. Only `setHandler` is mandatory.
