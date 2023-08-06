@@ -17,15 +17,31 @@ Maven dependency:
 To open a sign editor gui for a player, do the following:
 ```java
 SignGUI.builder()
-    .setLines("§6Line 1", null, "§6Line 3") // set lines
-    .setLine(3, "Line 4") // set specific line, starting index is 0
-    .setType(Material.DARK_OAK_SIGN) // set the sign type
-    .setColor(DyeColor.YELLOW) // set the sign color
-    .setHandler((p, result) -> { // set the handler/listener (called when the player finishes editing)
-        String line0 = result.getLine(0); // get a speficic line, starting index is 0
-        String line1 = result.getLineWithoutColor(1); // get a specific line without color codes
-        String[] lines = result.getLines(); // get all lines
-        String[] linesWithoutColor = result.getLinesWithoutColor(); // get all lines without color codes
+    // set lines
+    .setLines("§6Line 1", null, "§6Line 3")
+
+    // set specific line, starting index is 0
+    .setLine(3, "Line 4")
+
+    // set the sign type
+    .setType(Material.DARK_OAK_SIGN)
+
+    // set the sign color
+    .setColor(DyeColor.YELLOW)
+
+    // set the handler/listener (called when the player finishes editing)
+    .setHandler((p, result) -> {
+        // get a speficic line, starting index is 0
+        String line0 = result.getLine(0);
+
+        // get a specific line without color codes
+        String line1 = result.getLineWithoutColor(1);
+
+        // get all lines
+        String[] lines = result.getLines();
+
+        // get all lines without color codes
+        String[] linesWithoutColor = result.getLinesWithoutColor();
 
         if (line1.isEmpty()) {
             // The user has not entered anything on line 2, so we open the sign again
@@ -35,7 +51,8 @@ SignGUI.builder()
         if (line1.equals("inv")) {
             // close the sign and open an inventory
             return List.of(
-                SignGUIAction.openInventory(this, Bukkit.createInventory(player, 27)), // "this" = your JavaPlugin instance
+                // "this" = your JavaPlugin instance
+                SignGUIAction.openInventory(this, Bukkit.createInventory(player, 27)),
                 SignGUIAction.run(() -> player.sendMessage("Inventory opened!"))
             );
         }
