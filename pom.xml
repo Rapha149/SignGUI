@@ -7,7 +7,7 @@
     <groupId>io.github.rapha149.signgui</groupId>
     <artifactId>signgui-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.2</version>
+    <version>2.2.1</version>
 
     <name>${project.groupId}:signgui</name>
     <description>An api to get input text via a sign in Minecraft.</description>
@@ -60,6 +60,7 @@
         <module>1_19_R2</module>
         <module>1_19_R3</module>
         <module>1_20_R1</module>
+        <module>1_20_R2</module>
     </modules>
 
     <properties>
