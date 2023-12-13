@@ -79,11 +79,11 @@ An explanation for the different methods can be found on the [Javadoc](https://j
 ## Limitations
 
 ### The location of the sign
-Especially in newer versions, I encountered the problem that the sign had to be near the player to edit it.  
+Especially in newer versions, I encountered the problem that the sign had to be near the player in order to edit it.  
 In older versions it worked by placing the sign at the bottom of the world but that does not seem to be the case anymore, in my tests anyway.
 
 Because of that the default location is three blocks behind the player (three blocks in the opposite view direction).
-The only problem with this is that if you tell the api to redisplay the sign if the player e.g. typed something wrong, the player could slowly turn around and then see the sign.
+The only problem with this is that if you tell the api to redisplay the sign if the player e.g. typed something wrong, the player could slowly turn and then see the sign because there is a slight delay before the gui opens again and in that time the player can turn around a little bit.  
 You are, naturally, free to experiment with the location of the sign yourself.
 
 Of course the sign is not really placed, it's just send to the player, so other players won't see it.
@@ -91,9 +91,9 @@ Of course the sign is not really placed, it's just send to the player, so other 
 ### Opening a sign after a player joins
 Since the sign is not actually placed on the server, it can get overwritten when the chunks are sent to the player, which is the case when the player joins.
 
-Because of that you may encounter problems when you send a sign to the player directly when he joins.
-But even with 20 ticks (1 second) delay from the PlayerJoinEvent, the sign was empty sometimes.  
-I would recommend waiting at least a few more seconds before opening the gui. 
+Because of that you may encounter the problem that the sign does not display any text when you send it to the player directly when he joins.  
+But even with a 20 tick (1 second) delay after the PlayerJoinEvent, the sign in my tests was empty sometimes.  
+I would recommend waiting at least a few more seconds before opening the gui.
 
 ## Credits
 This project's structure was inspired by WesJD's [AnvilGUI](https://github.com/WesJD/AnvilGUI) and I used some code from Cleymax's [SignGUI](https://github.com/Cleymax/SignGUI).
