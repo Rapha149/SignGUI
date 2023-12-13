@@ -1,6 +1,6 @@
 # SignGUI [![Maven Central](https://img.shields.io/maven-central/v/io.github.rapha149.signgui/signgui?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.rapha149.signgui/signgui) [![Javadoc](https://javadoc.io/badge2/io.github.rapha149.signgui/signgui/Javadoc.svg)](https://javadoc.io/doc/io.github.rapha149.signgui/signgui) 
 An api to get input text via a sign in Minecraft.  
-The api supports the Minecraft versions from `1.8` to `1.20.1`.
+The api supports the Minecraft versions from `1.8` to `1.20.4`.
 
 ## Integration
 
