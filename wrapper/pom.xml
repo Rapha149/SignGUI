@@ -6,8 +6,8 @@
 
     <parent>
         <artifactId>signgui-parent</artifactId>
-        <groupId>io.github.rapha149.signgui</groupId>
-        <version>2.2.2</version>
+        <groupId>de.rapha149.signgui</groupId>
+        <version>2.3</version>
     </parent>
 
     <artifactId>signgui-wrapper</artifactId>
@@ -28,11 +28,20 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
-                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                    <source>8</source>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

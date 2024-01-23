@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>signgui-parent</artifactId>
-        <groupId>io.github.rapha149.signgui</groupId>
-        <version>2.2.2</version>
+        <groupId>de.rapha149.signgui</groupId>
+        <version>2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,7 +23,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.rapha149.signgui</groupId>
+            <groupId>de.rapha149.signgui</groupId>
             <artifactId>signgui-wrapper</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
@@ -39,13 +39,6 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <configuration>
-                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
                 </configuration>
             </plugin>
         </plugins>
