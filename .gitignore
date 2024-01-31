@@ -4,5 +4,4 @@ target/
 test/
 dependency-reduced-pom.xml
 .mvn/
-deploy.sh
 .flattened-pom.xml
