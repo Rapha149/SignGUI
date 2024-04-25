@@ -22,5 +22,10 @@ Add code snippets from your code to explain your problem. For better formatting,
 **Error messages**
 If any errors occur while compiling or while running your plugin on the server, please add them here.
 
+**Information**
+ - Server software [e.g. Spigot, Paper, Mohist]
+ - Server version [e.g. 1.20.4]
+ - API version [e.g. 2.3.2]
+
 **Additional context**
 Add any other context about the problem here.
