@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Javadoc
+    url: https://javadoc.io/doc/de.rapha149.signgui/signgui
+    about:  The Javadoc is the perfect place to retrieve information about our API.
