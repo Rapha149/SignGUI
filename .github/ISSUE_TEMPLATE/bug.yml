@@ -50,9 +50,9 @@ body:
     label: Code snippets
     description: |
       If applicable, upload or paste code snippets to help explain your problem. For better formatting, please place your code inside a fenced code block like this:
-      ```java
+      \`\`\`java
       // Code
-      ```
+      \`\`\`
 - type: textarea
   attributes:
     label: Any additional comments?

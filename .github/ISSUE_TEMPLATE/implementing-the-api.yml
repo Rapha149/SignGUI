@@ -34,10 +34,10 @@ body:
   attributes:
     label: Code snippets
     description: |
-      Upload or add code snippets from your code to explain your problem.  For better formatting, please place your code inside a fenced code block like this:
-      ```java
+      If applicable, upload or paste code snippets to help explain your problem. For better formatting, please place your code inside a fenced code block like this:
+      \`\`\`java
       // Code
-      ```
+      \`\`\`
   validations:
     required: true
 - type: textarea
