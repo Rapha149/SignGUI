@@ -86,7 +86,7 @@ Because of that the default location is three blocks behind the player (three bl
 The only problem with this is that if you tell the api to redisplay the sign if the player e.g. typed something wrong, the player could slowly turn and then see the sign because there is a slight delay before the gui opens again and in that time the player can turn around a little bit.  
 You are, naturally, free to experiment with the location of the sign yourself.
 
-Of course the sign is not really placed, it's just send to the player, so other players won't see it.
+Of course the sign is not really placed, it's just sent to the player, so other players won't see it.
 
 ### Opening a sign after a player joins
 Since the sign is not actually placed on the server, it can get overwritten when the chunks are sent to the player, which is the case when the player joins.
