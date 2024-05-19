@@ -8,7 +8,7 @@ body:
 - type: input
   attributes:
     label: API version
-    placeholder: 2.3.2
+    placeholder: 2.3.3
   validations:
     required: true
 - type: input

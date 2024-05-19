@@ -23,7 +23,23 @@ public class SignGUI {
     static final String availableSignTypes;
 
     static {
-        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
+        String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
+
+        String version;
+        if (!craftBukkitPackage.contains(".v")) { // cb package not relocated (i.e. paper 1.20.5+)
+            // separating major and minor versions, example: 1.20.4-R0.1-SNAPSHOT -> major = 20, minor = 4
+            final String[] versionNumbers = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+            int major = Integer.parseInt(versionNumbers[1]);
+            int minor = Integer.parseInt(versionNumbers[2]);
+
+            if (major == 20 && (minor == 5 || minor ==6))
+                version = "1_20_R4";
+            else
+                throw new IllegalStateException("SignGUI does not support bukkit server version \"" + Bukkit.getBukkitVersion() + "\"");
+        } else {
+            version = craftBukkitPackage.split("\\.")[3].substring(1);
+        }
+
         try {
             WRAPPER = (VersionWrapper) Class.forName(VersionWrapper.class.getPackage().getName() + ".Wrapper" + version).getDeclaredConstructor().newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
