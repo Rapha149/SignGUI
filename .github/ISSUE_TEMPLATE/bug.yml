@@ -1,0 +1,58 @@
+name: Bug Report
+description: Create a report to help improve the API
+title: "[Bug] "
+labels: ["bug"]
+assignees: ["Rapha149"]
+
+body:
+- type: markdown
+  attributes:
+    value: Thanks for taking the time to submit a bug report! Please fill out the fields below.
+- type: input
+  attributes:
+    label: API version
+    placeholder: 2.3.2
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Server software and version
+    description: e.g. Spigot, Paper, Mohist, ...
+    placeholder: Spigot 1.16.5
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    description: How do you trigger this bug? Please walk us through it step by step.
+    placeholder: |
+      1.
+      2.
+      3.
+      ...
+    render: bash
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Expected behaviour
+    description: A clear and concise description of what you expected to happen.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: What is actually happening?
+    description: Describe what is actually happening, i.e. what the bug is. Please add screenshots if applicable.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Code snippets
+    description: |
+      If applicable, upload or paste code snippets to help explain your problem. For better formatting, please place your code inside a fenced code block like this:
+      ```java
+      // Code
+      ```
+- type: textarea
+  attributes:
+    label: Any additional comments?

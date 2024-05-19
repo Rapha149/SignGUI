@@ -1,0 +1,45 @@
+name: I need help implementing the API
+description: Ask a question or describe a problem you have with using the API in your project
+title: "[Problem] "
+labels: ["problem"]
+assignees: ["Rapha149"]
+
+body:
+- type: input
+  attributes:
+    label: API version
+    placeholder: 2.3.2
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Server software and version
+    description: e.g. Spigot, Paper, Mohist, ...
+    placeholder: Spigot 1.16.5
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: What are you trying to do?
+    description: Describe what you want to achieve with the API in your project.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: What do you need help with?
+    description: Describe what you struggle with and how you have tried to solve the problem.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Code snippets
+    description: |
+      Upload or add code snippets from your code to explain your problem.  For better formatting, please place your code inside a fenced code block like this:
+      ```java
+      // Code
+      ```
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Any additional comments?
