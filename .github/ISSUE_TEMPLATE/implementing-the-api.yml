@@ -2,7 +2,6 @@ name: I need help implementing the API
 description: Ask a question or describe a problem you have with using the API in your project
 title: "[Problem] "
 labels: ["problem"]
-assignees: ["Rapha149"]
 
 body:
 - type: input

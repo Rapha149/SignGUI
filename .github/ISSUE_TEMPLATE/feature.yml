@@ -2,7 +2,6 @@ name: Feature request
 description: Suggest an idea for the API
 title: "[Feature] "
 labels: ["enhancement"]
-assignees: ["Rapha149"]
 
 body:
 - type: markdown
