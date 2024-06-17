@@ -31,6 +31,6 @@ jobs:
       working-directory: ./api
       run: mvn -B deploy --file pom.xml
       env:
-        CENTRAL_USERNAME: SQIXE3CJ
+        CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
         CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
