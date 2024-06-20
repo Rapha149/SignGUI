@@ -9,8 +9,16 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,17 +33,38 @@ public class SignGUI {
     static {
         String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
 
-        String version;
+        String version = null;
         if (!craftBukkitPackage.contains(".v")) { // cb package not relocated (i.e. paper 1.20.5+)
-            // separating major and minor versions, example: 1.20.4-R0.1-SNAPSHOT -> major = 20, minor = 4
-            final String[] versionNumbers = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
-            int major = Integer.parseInt(versionNumbers[1]);
-            int minor = Integer.parseInt(versionNumbers[2]);
+            String bukkitVersion = Bukkit.getBukkitVersion();
 
-            if (major == 20 && (minor == 5 || minor ==6))
-                version = "1_20_R4";
-            else
-                throw new IllegalStateException("SignGUI does not support bukkit server version \"" + Bukkit.getBukkitVersion() + "\"");
+            try {
+                HttpURLConnection conn = (HttpURLConnection) new URL("https://raw.githubusercontent.com/Rapha149/NMSVersions/main/nms-versions.json").openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    JSONObject json = (JSONObject) new JSONParser().parse(br.lines().collect(Collectors.joining()));
+                    if (json.containsKey(bukkitVersion))
+                        version = (String) json.get(bukkitVersion);
+                }
+            } catch (IOException | ParseException e) {
+                Bukkit.getLogger().warning("[SignGUI] Can't access online NMS versions list, falling back to hardcoded NMS versions. These could be outdated.");
+            }
+
+            if (version == null) {
+                // separating major and minor versions, example: 1.20.4-R0.1-SNAPSHOT -> major = 20, minor = 4
+                final String[] versionNumbers = bukkitVersion.split("-")[0].split("\\.");
+                int major = Integer.parseInt(versionNumbers[1]);
+                int minor = versionNumbers.length > 2 ? Integer.parseInt(versionNumbers[2]) : 0;
+
+                if (major == 20 && minor >= 5) { // 1.20.5, 1.20.6
+                    version = "1_20_R4";
+                } else if (major == 21 && minor == 0) { // 1.21
+                    version = "1_21_R1";
+                } else {
+                    throw new IllegalStateException("SignGUI does not support bukkit server version \"" + bukkitVersion + "\"");
+                }
+            }
         } else {
             version = craftBukkitPackage.split("\\.")[3].substring(1);
         }
@@ -144,8 +173,8 @@ public class SignGUI {
      * This is called when {@link SignGUIAction#displayNewLines(String...)} is returned as an action after the player has finished editing.
      *
      * @param lines The lines, must be exactly 4.
-     * @throws java.lang.IllegalArgumentException   If lines is null or not exactly 4 lines.
-     * @throws SignGUIException If an error occurs while setting the lines.
+     * @throws java.lang.IllegalArgumentException If lines is null or not exactly 4 lines.
+     * @throws SignGUIException                   If an error occurs while setting the lines.
      */
     void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
         Validate.notNull(lines, "The lines cannot be null");

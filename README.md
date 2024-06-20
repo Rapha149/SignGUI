@@ -9,8 +9,38 @@ Maven dependency:
 <dependency>
     <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui</artifactId>
-    <version>2.3.4</version>
+    <version>2.3.5</version>
 </dependency>
+```
+
+In order to avoid conflicts with other plugins that also use this api, relocate the package in your maven shade plugin:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>SHADE_VERSION</version> <!-- The version must be at least 3.5.0 -->
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <relocations>
+                            <relocation>
+                                <pattern>de.rapha149.signgui</pattern>
+                                <!-- Replace [YOUR_PLUGIN_PACKAGE] with your namespace -->
+                                <shadedPattern>[YOUR_PLUGIN_PACKAGE].signgui</shadedPattern>
+                            </relocation>
+                        </relocations>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 ```
 
 ## Usage
