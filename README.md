@@ -104,7 +104,7 @@ gui.open(player2);
 You don't have to call all methods. Only `setHandler` is mandatory.
 
 By default, the handler is called by an asynchronous thread. You can change that behaviour by calling the method `callHandlerSynchronously` of the builder.
-An explanation for the different methods can be found on the [Javadoc](https://javadoc.io/doc/io.github.rapha149.signgui/signgui).
+An explanation for the different methods can be found on the [Javadoc](https://javadoc.io/doc/de.rapha149.signgui/signgui).
 
 ## Limitations
 
