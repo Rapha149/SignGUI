@@ -43,6 +43,32 @@ In order to avoid conflicts with other plugins that also use this api, relocate 
 </build>
 ```
 
+<details>
+<summary><h3>Issues with Gradle's minimize() method</h3></summary>
+
+My API loads it's version wrapper classes via Reflection because otherwise the imports not corresponding to the current Minecraft version would cause an error.
+Unfortunately, this clashes with Gradle's `minimize()` method because that method causes the compiler to ignore any classes that weren't explicitly used in the code.  
+There are two solution to this problem:
+1. Explicitly use the correct wrapper class in your code.
+   This only works for plugins which are intended to only work on one specific Minecraft version as using a wrapper class that doesn't correspond to the Minecraft version causes errors due to the reasons above.
+   Anyway, this is how you could do it:
+   ```java
+   Wrapper1_20_R4.class.getName()
+   ```
+   I used the class `Wrapper1_20_R4` in this example which corresponds to the Minecraft version `1.20.5` and `1.20.6`.
+   In order to find out which Minecraft version corresponds to which wrapper class you can check out this Github repository of mine: [NMSVersions](https://github.com/Rapha149/NMSVersions?tab=readme-ov-file#versions).  
+   ​
+3. Exclude the SignGUI dependency from being affected by the `minimize()` method like this:
+   ```gradle
+   minimize() {
+       // exclude every version of the SignGUI dependency using a Regex string
+       exclude(dependency("de\\.rapha149\\.signgui:signgui:.*"))
+   }
+   ```
+   This solution will cause all wrapper classes to compile. Even if your plugin only supports Minecraft 1.17+ it will also compile the wrapper classes for versions up to 1.16.5.
+   However, it's not that much code and there is, to my knowledge, no better solution.
+</details>
+
 ## Usage
 To open a sign editor gui for a player, do the following:
 ```java
