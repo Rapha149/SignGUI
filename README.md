@@ -134,6 +134,9 @@ An explanation for the different methods can be found on the [Javadoc](https://j
 
 ## Limitations
 
+### Players can edit pre-written lines
+Due to the nature of sign editing, it is not possible to specify the lines a player can and can't edit. If you set pre-written lines on the sign (e.g. for informing the player what he should write), the player will be able to delete or edit these lines as well. My recommendation is to ignore the pre-written lines when analyzing the player's response so that it doesn't matter if the player alters them and to leave the first line(s) blank for the player to write on so that he doesn't have to select a lower line first.
+
 ### The location of the sign
 Especially in newer versions, I encountered the problem that the sign had to be near the player in order to edit it.  
 In older versions it worked by placing the sign at the bottom of the world but that does not seem to be the case anymore, in my tests anyway.
