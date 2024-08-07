@@ -1,6 +1,7 @@
 package de.rapha149.signgui;
 
 import de.rapha149.signgui.SignGUIAction.SignGUIActionInfo;
+import de.rapha149.signgui.version.AdventureVersionWrapper;
 import de.rapha149.signgui.version.VersionWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -30,6 +31,29 @@ public class SignGUI {
     static final VersionWrapper WRAPPER;
     static final String availableSignTypes;
 
+    private static boolean isOnPaper(){
+        boolean isPaper = false;
+        try {
+            Class.forName("com.destroystokyo.paper.ParticleBuilder");
+            isPaper = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+        return isPaper;
+    }
+
+    /**
+     *
+     * @param version like 1_20_R4
+     * @return true if >= 1.20.5
+     */
+    private static boolean mayBeMojangMapped(String version){
+        final String[] versionNumbers = version.replace("R", "").split("_");
+        int major = Integer.parseInt(versionNumbers[1]);
+        int minor = versionNumbers.length > 2 ? Integer.parseInt(versionNumbers[2]) : 0;
+        if (major == 20 && minor == 4) return true; // 1.20.5/6
+        return major > 20; // >= 1.21
+    }
+
     static {
         String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
 
@@ -39,6 +63,7 @@ public class SignGUI {
 
             try {
                 HttpURLConnection conn = (HttpURLConnection) new URL("https://raw.githubusercontent.com/Rapha149/NMSVersions/main/nms-versions.json").openConnection();
+                conn.setConnectTimeout(10*1000);
                 conn.setRequestMethod("GET");
                 conn.connect();
 
@@ -69,8 +94,16 @@ public class SignGUI {
             version = craftBukkitPackage.split("\\.")[3].substring(1);
         }
 
+        boolean mojangMappings = isOnPaper() && mayBeMojangMapped(version);
+        final String className;
+        if (mojangMappings) {
+            className = VersionWrapper.class.getPackage().getName() + ".MojangWrapper" + version;
+        } else {
+            className = VersionWrapper.class.getPackage().getName() + ".Wrapper" + version;
+        }
+
         try {
-            WRAPPER = (VersionWrapper) Class.forName(VersionWrapper.class.getPackage().getName() + ".Wrapper" + version).getDeclaredConstructor().newInstance();
+            WRAPPER = (VersionWrapper) Class.forName(className).getDeclaredConstructor().newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
                  InvocationTargetException exception) {
             throw new IllegalStateException("Failed to load support for server version " + version, exception);
@@ -97,11 +130,12 @@ public class SignGUI {
     private final SignGUIFinishHandler handler;
     private final boolean callHandlerSynchronously;
     private final JavaPlugin plugin;
+    private final Object[] adventureLines;
 
     /**
      * Constructs a new SignGUI. Use {@link SignGUI#builder()} to get a new instance.
      */
-    SignGUI(String[] lines, Material type, DyeColor color, Location signLoc, SignGUIFinishHandler handler, boolean callHandlerSynchronously, JavaPlugin plugin) {
+    SignGUI(String[] lines, Material type, DyeColor color, Location signLoc, SignGUIFinishHandler handler, boolean callHandlerSynchronously, JavaPlugin plugin, Object[] adventureLines) {
         this.lines = lines;
         this.type = type;
         this.color = color;
@@ -109,6 +143,7 @@ public class SignGUI {
         this.handler = handler;
         this.callHandlerSynchronously = callHandlerSynchronously;
         this.plugin = plugin;
+        this.adventureLines = adventureLines;
     }
 
     /**
@@ -124,6 +159,10 @@ public class SignGUI {
         Validate.notNull(player, "The player cannot be null");
 
         try {
+            if (WRAPPER instanceof AdventureVersionWrapper && adventureLines != null){
+                AdventureVersionWrapper adventure = (AdventureVersionWrapper) WRAPPER;
+                adventure.setAdventureLines(adventureLines);
+            }
             WRAPPER.openSignEditor(player, lines, type, color, signLoc, (signEditor, resultLines) -> {
                 Runnable runnable = () -> {
                     Runnable close = () -> WRAPPER.closeSignEditor(player, signEditor);

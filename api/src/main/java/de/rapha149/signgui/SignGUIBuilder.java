@@ -20,6 +20,7 @@ public class SignGUIBuilder {
     private SignGUIFinishHandler handler;
     private boolean callHandlerSynchronously = false;
     private JavaPlugin plugin;
+    private Object[] adventureLines = null;
 
     /**
      * Constructs a new SignGUIBuilder. Use {@link SignGUI#builder()} to get a new instance.
@@ -51,6 +52,34 @@ public class SignGUIBuilder {
     public SignGUIBuilder setLine(int index, String line) {
         Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
         lines[index] = line;
+        return this;
+    }
+
+    /**
+     * Sets the lines that are shown on the sign.
+     *
+     * @param lines The lines, may be less than 4.
+     * @return The {@link SignGUIBuilder} instance
+     * @throws java.lang.IllegalArgumentException If lines is null.
+     */
+    public SignGUIBuilder setAdventureLines(Object... lines) {
+        Validate.notNull(lines, "The lines cannot be null");
+        this.adventureLines = lines;
+        return this;
+    }
+
+    /**
+     * Sets a specific line that is shown on the sign.
+     *
+     * @param index The index of the line.
+     * @param component  Adventure component
+     * @return The {@link SignGUIBuilder} instance
+     * @throws java.lang.IllegalArgumentException If the index is below 0 or above 4.
+     */
+    public SignGUIBuilder setAdventureLine(int index, Object component) {
+        Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
+        if (adventureLines == null) adventureLines = new Object[4];
+        adventureLines[index] = component;
         return this;
     }
 
@@ -125,6 +154,6 @@ public class SignGUIBuilder {
      */
     public SignGUI build() {
         Validate.notNull(handler, "handler must be set");
-        return new SignGUI(lines, type, color, loc, handler, callHandlerSynchronously, plugin);
+        return new SignGUI(lines, type, color, loc, handler, callHandlerSynchronously, plugin, adventureLines);
     }
 }
