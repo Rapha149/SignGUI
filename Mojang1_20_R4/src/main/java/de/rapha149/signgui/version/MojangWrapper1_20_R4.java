@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-public class MojangWrapper1_20_R4 implements AdventureVersionWrapper {
+public class MojangWrapper1_20_R4 implements VersionWrapper {
 
     @Override
     public Material getDefaultType() {
@@ -42,46 +42,8 @@ public class MojangWrapper1_20_R4 implements AdventureVersionWrapper {
         );
     }
 
-    private net.kyori.adventure.text.Component[] adventureLines = null;
-
     @Override
-    public void setAdventureLines(Object[] lines) {
-        var tmp = new net.kyori.adventure.text.Component[4];
-        for (int i = 0; i < lines.length; i++) {
-            var line = lines[i];
-            if (line instanceof net.kyori.adventure.text.Component comp) {
-                tmp[i] = comp;
-            } else if (line == null) {
-                tmp[i] = null;
-            } else {
-                throw new IllegalArgumentException("line at index "+i+" is not net.kyori.adventure.text.Component");
-            }
-        }
-        adventureLines = tmp;
-    }
-
-    private Component[] createLines(String[] textLines){
-        var ret = new Component[4];
-        if (adventureLines != null) {
-            for (int i = 0; i < adventureLines.length; i++) {
-                var comp = adventureLines[i];
-                if (comp == null) {
-                    ret[i] = Component.empty();
-                } else {
-                    ret[i] = new AdventureComponent(comp);
-                }
-            }
-        } else {
-            for (int i = 0; i < textLines.length; i++) {
-                var line = textLines[i];
-                ret[i] = Component.nullToEmpty(line);
-            }
-        }
-        return ret;
-    }
-
-    @Override
-    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws IllegalAccessException {
+    public void openSignEditor(Player player, String[] lines, Object[] adventureLines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
         ServerPlayer p = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl conn = p.connection;
 
@@ -91,7 +53,24 @@ public class MojangWrapper1_20_R4 implements AdventureVersionWrapper {
         SignBlockEntity sign = new SignBlockEntity(pos, null);
         SignText signText = sign.getText(true) // flag = front/back of sign
                 .setColor(net.minecraft.world.item.DyeColor.valueOf(color.toString()));
-        var linesToSet = createLines(lines);
+
+        Component[] linesToSet = new Component[4];
+        if (adventureLines != null) {
+            for (int i = 0; i < adventureLines.length; i++) {
+                Object line = adventureLines[i];
+                if (line instanceof net.kyori.adventure.text.Component component) {
+                    linesToSet[i] = new AdventureComponent(component);
+                } else if (line == null) {
+                    linesToSet[i] = Component.empty();
+                } else {
+                    throw new IllegalArgumentException("line at index " + i + " is not net.kyori.adventure.text.Component");
+                }
+            }
+        } else {
+            for (int i = 0; i < lines.length; i++)
+                linesToSet[i] = Component.nullToEmpty(lines[i]);
+        }
+
         for (int i = 0; i < linesToSet.length; i++)
             signText = signText.setMessage(i, linesToSet[i]);
         sign.setText(signText, true);
@@ -154,20 +133,20 @@ public class MojangWrapper1_20_R4 implements AdventureVersionWrapper {
 
     @Override
     public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
-        SignBlockEntity sign = (SignBlockEntity)signEditor.getSign();
+        SignBlockEntity sign = (SignBlockEntity) signEditor.getSign();
 
         SignText newSignText = sign.getText(true);
-        for(int i = 0; i < lines.length; ++i) {
+        for (int i = 0; i < lines.length; ++i) {
             newSignText = newSignText.setMessage(i, Component.nullToEmpty(lines[i]));
         }
         sign.setText(newSignText, true);
 
-        ServerPlayer p = ((CraftPlayer)player).getHandle();
+        ServerPlayer p = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl conn = p.connection;
         sign.setLevel(p.level());
         conn.send(sign.getUpdatePacket());
         sign.setLevel(null);
-        conn.send(new ClientboundOpenSignEditorPacket((BlockPos)signEditor.getBlockPosition(), true));
+        conn.send(new ClientboundOpenSignEditorPacket((BlockPos) signEditor.getBlockPosition(), true));
     }
 
     @Override

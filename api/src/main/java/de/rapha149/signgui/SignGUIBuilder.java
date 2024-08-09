@@ -14,13 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SignGUIBuilder {
 
     private String[] lines = new String[4];
+    private Object[] adventureLines = null;
     private Material type = SignGUI.WRAPPER.getDefaultType();
     private DyeColor color = DyeColor.BLACK;
     private Location loc;
     private SignGUIFinishHandler handler;
     private boolean callHandlerSynchronously = false;
     private JavaPlugin plugin;
-    private Object[] adventureLines = null;
 
     /**
      * Constructs a new SignGUIBuilder. Use {@link SignGUI#builder()} to get a new instance.
@@ -56,7 +56,8 @@ public class SignGUIBuilder {
     }
 
     /**
-     * Sets the lines that are shown on the sign.
+     * Sets the lines that are shown on the sign using an Adventure component.
+     * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
      *
      * @param lines The lines, may be less than 4.
      * @return The {@link SignGUIBuilder} instance
@@ -69,7 +70,8 @@ public class SignGUIBuilder {
     }
 
     /**
-     * Sets a specific line that is shown on the sign.
+     * Sets a specific line that is shown on the sign using an Adventure component.
+     * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
      *
      * @param index The index of the line.
      * @param component  Adventure component
@@ -78,7 +80,8 @@ public class SignGUIBuilder {
      */
     public SignGUIBuilder setAdventureLine(int index, Object component) {
         Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
-        if (adventureLines == null) adventureLines = new Object[4];
+        if (adventureLines == null)
+            adventureLines = new Object[4];
         adventureLines[index] = component;
         return this;
     }
@@ -154,6 +157,6 @@ public class SignGUIBuilder {
      */
     public SignGUI build() {
         Validate.notNull(handler, "handler must be set");
-        return new SignGUI(lines, type, color, loc, handler, callHandlerSynchronously, plugin, adventureLines);
+        return new SignGUI(lines, adventureLines, type, color, loc, handler, callHandlerSynchronously, plugin);
     }
 }

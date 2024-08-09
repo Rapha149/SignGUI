@@ -16,6 +16,7 @@
     </properties>
 
     <dependencies>
+        <!-- plugins -> paper-nms -> init (https://github.com/Alvinn8/paper-nms-maven-plugin) -->
         <dependency>
             <groupId>ca.bkaw</groupId>
             <artifactId>paper-nms</artifactId>

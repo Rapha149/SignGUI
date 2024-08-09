@@ -207,13 +207,13 @@
         </dependency>
         <dependency>
             <groupId>de.rapha149.signgui</groupId>
-            <artifactId>signgui-1_21_R1</artifactId>
+            <artifactId>signgui-1_20_R4-mojang</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.rapha149.signgui</groupId>
-            <artifactId>signgui-1_20_R4-mojang</artifactId>
+            <artifactId>signgui-1_21_R1</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
