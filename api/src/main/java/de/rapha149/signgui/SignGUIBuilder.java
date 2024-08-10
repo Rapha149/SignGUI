@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+
 /**
  * Builder for {@link SignGUI}.
  */
@@ -37,7 +39,7 @@ public class SignGUIBuilder {
      */
     public SignGUIBuilder setLines(String... lines) {
         Validate.notNull(lines, "The lines cannot be null");
-        this.lines = lines;
+        this.lines = Arrays.copyOf(lines, 4);
         return this;
     }
 
@@ -56,22 +58,24 @@ public class SignGUIBuilder {
     }
 
     /**
-     * Sets the lines that are shown on the sign using an Adventure component.
+     * Sets the lines that are shown on the sign using an Adventure component (1.20.5+)
      * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
+     * It is recommended to also set fallback lines using {@link #setLines(String...)} as these will be used if the Adventure components cannot be used for some reason.
      *
-     * @param lines The lines, may be less than 4.
+     * @param adventureLines The lines, may be less than 4.
      * @return The {@link SignGUIBuilder} instance
      * @throws java.lang.IllegalArgumentException If lines is null.
      */
-    public SignGUIBuilder setAdventureLines(Object... lines) {
-        Validate.notNull(lines, "The lines cannot be null");
-        this.adventureLines = lines;
+    public SignGUIBuilder setAdventureLines(Object... adventureLines) {
+        Validate.notNull(adventureLines, "The adventure lines cannot be null");
+        this.adventureLines = Arrays.copyOf(adventureLines, 4);
         return this;
     }
 
     /**
-     * Sets a specific line that is shown on the sign using an Adventure component.
+     * Sets a specific line that is shown on the sign using an Adventure component (1.20.5+)
      * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
+     * It is recommended to also set fallback lines using {@link #setLine(int, String)} as these will be used if the Adventure components cannot be used for some reason.
      *
      * @param index The index of the line.
      * @param component  Adventure component

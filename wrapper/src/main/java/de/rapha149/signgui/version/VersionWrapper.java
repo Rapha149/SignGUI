@@ -47,7 +47,7 @@ public interface VersionWrapper {
      * @param signEditor The sign editor.
      * @param lines The new lines.
      */
-    void displayNewLines(Player player, SignEditor signEditor, String[] lines);
+    void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines);
 
     /**
      * Called when the sign editor should be closed.

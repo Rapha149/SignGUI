@@ -140,7 +140,7 @@ public class Wrapper1_20_R4 implements VersionWrapper {
     }
 
     @Override
-    public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+    public void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines) {
         TileEntitySign sign = (TileEntitySign) signEditor.getSign();
 
         SignText newSignText = sign.a(true);

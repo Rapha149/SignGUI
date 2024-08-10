@@ -1,11 +1,9 @@
 package de.rapha149.signgui;
 
-import de.rapha149.signgui.version.VersionWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -16,15 +14,15 @@ import java.util.Arrays;
 public interface SignGUIAction {
 
     /**
-     * @return The {@link SignGUIActionInfo} instance containing information about this action
+     * @return The {@link de.rapha149.signgui.SignGUIAction.SignGUIActionInfo} instance containing information about this action
      */
     SignGUIActionInfo getInfo();
 
     /**
      * Called to execute the actions after the player finished editing the sign.
      *
-     * @param gui    The {@link SignGUI} instance
-     * @param signEditor The {@link SignEditor} instance containing information relevant to the {@link VersionWrapper}
+     * @param gui    The {@link de.rapha149.signgui.SignGUI} instance
+     * @param signEditor The {@link de.rapha149.signgui.SignEditor} instance containing information relevant to the {@link de.rapha149.signgui.version.VersionWrapper}
      * @param player The player who edited the sign
      */
     void execute(SignGUI gui, SignEditor signEditor, Player player);
@@ -33,8 +31,8 @@ public interface SignGUIAction {
      * Creates a new SignGUIAction that opens the sign gui again with the new lines.
      *
      * @param lines The new lines, may be less then 4
-     * @return The new {@link SignGUIAction} instance
-     * @throws java.lang.IllegalArgumentException If lines is null.
+     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
+     * @throws IllegalArgumentException If lines is null.
      */
     static SignGUIAction displayNewLines(String... lines) {
         Validate.notNull(lines, "The lines cannot be null");
@@ -50,18 +48,64 @@ public interface SignGUIAction {
 
             @Override
             public void execute(SignGUI gui, SignEditor signEditor, Player player) {
-                gui.displayNewLines(player, signEditor, Arrays.copyOf(lines, 4));
+                gui.displayNewLines(player, signEditor, Arrays.copyOf(lines, 4), null);
+            }
+        };
+    }
+
+    /**
+     * Creates a new SignGUIAction that opens the sign gui again with the new lines using the Adventure component (1.20.5+).
+     * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
+     * If you want to set fallback lines to use when Adventure components cannot be used, use {@link #displayNewAdventureLines(Object[], String[])}.
+     * Please note that if you use this method and the Adventure components cannot be used, the sign will be empty.
+     *
+     * @param adventureLines The new adventure lines, may be less then 4
+     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
+     * @throws IllegalArgumentException If adventure lines is null.
+     * @see #displayNewAdventureLines(Object[], String[])
+     */
+    static SignGUIAction displayNewAdventureLines(Object... adventureLines) {
+        return displayNewAdventureLines(adventureLines, null);
+    }
+
+    /**
+     * Creates a new SignGUIAction that opens the sign gui again with the new lines using the Adventure component (1.20.5+).
+     * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
+     * Please note that if you use don't submit fallback lines'and the Adventure components cannot be used, the sign will be empty.
+     *
+     * @param adventureLines The new lines, may be less then 4
+     * @param fallbackLines  The fallback lines, may be less then 4. These are used when the Adventure components cannot be used. May be null.
+     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
+     * @throws IllegalArgumentException If adventure lines is null.
+     * @see #displayNewLines(String...)
+     */
+    static SignGUIAction displayNewAdventureLines(Object[] adventureLines, String[] fallbackLines) {
+        Validate.notNull(adventureLines, "The lines cannot be null");
+
+        return new SignGUIAction() {
+
+            private SignGUIActionInfo info = new SignGUIActionInfo("displayNewLines", true, 1);
+
+            @Override
+            public SignGUIActionInfo getInfo() {
+                return info;
+            }
+
+            @Override
+            public void execute(SignGUI gui, SignEditor signEditor, Player player) {
+                gui.displayNewLines(player, signEditor, fallbackLines != null ? Arrays.copyOf(fallbackLines, 4) : new String[4],
+                        Arrays.copyOf(adventureLines, 4));
             }
         };
     }
 
     /**
      * Creates a new SignGUIAction that opens an inventory.
-     * The inventory is opened synchronously by calling the method {@link org.bukkit.scheduler.BukkitScheduler#runTask(Plugin, Runnable)}
+     * The inventory is opened synchronously by calling the method {@link org.bukkit.scheduler.BukkitScheduler#runTask(org.bukkit.plugin.Plugin, Runnable)}
      *
      * @param plugin    Your {@link org.bukkit.plugin.java.JavaPlugin} instance
      * @param inventory The inventory to open
-     * @return The new {@link SignGUIAction} instance
+     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
      */
     static SignGUIAction openInventory(JavaPlugin plugin, Inventory inventory) {
         Validate.notNull(plugin, "The plugin cannot be null");
@@ -88,7 +132,7 @@ public interface SignGUIAction {
      * The runnable will be run asynchronously.
      *
      * @param runnable The runnable to run
-     * @return The new {@link SignGUIAction} instance
+     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
      */
     static SignGUIAction run(Runnable runnable) {
         Validate.notNull(runnable, "The runnable cannot be null");
@@ -114,7 +158,7 @@ public interface SignGUIAction {
      *
      * @param plugin   Your {@link org.bukkit.plugin.java.JavaPlugin} instance
      * @param runnable The runnable to run
-     * @return The new {@link SignGUIAction} instance
+     * @return The new {@link de.rapha149.signgui.SignGUIAction} instance
      */
     static SignGUIAction runSync(JavaPlugin plugin, Runnable runnable) {
         Validate.notNull(plugin, "The plugin cannot be null");
@@ -137,7 +181,7 @@ public interface SignGUIAction {
     }
 
     /**
-     * Describes a {@link SignGUIAction}
+     * Describes a {@link de.rapha149.signgui.SignGUIAction}
      */
     class SignGUIActionInfo {
 

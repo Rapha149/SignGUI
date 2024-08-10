@@ -97,7 +97,7 @@ public class Wrapper1_13_R1 implements VersionWrapper {
     }
 
     @Override
-    public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+    public void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines) {
         TileEntitySign sign = (TileEntitySign) signEditor.getSign();
         for (int i = 0; i < lines.length; i++)
             sign.lines[i] = new ChatComponentText(lines[i] != null ? lines[i] : "");

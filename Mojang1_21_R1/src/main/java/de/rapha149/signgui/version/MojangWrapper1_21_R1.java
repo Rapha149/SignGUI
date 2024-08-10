@@ -42,8 +42,28 @@ public class MojangWrapper1_21_R1 implements VersionWrapper {
         );
     }
 
+    private static Component[] createLines(String[] textLines, Object[] adventureLines) {
+        Component[] lines = new Component[4];
+        if (adventureLines != null) {
+            for (int i = 0; i < adventureLines.length; i++) {
+                Object line = adventureLines[i];
+                if (line instanceof net.kyori.adventure.text.Component component) {
+                    lines[i] = new AdventureComponent(component);
+                } else if (line == null) {
+                    lines[i] = Component.empty();
+                } else {
+                    throw new IllegalArgumentException("line at index " + i + " is not net.kyori.adventure.text.Component");
+                }
+            }
+        } else {
+            for (int i = 0; i < textLines.length; i++)
+                lines[i] = Component.nullToEmpty(textLines[i]);
+        }
+        return lines;
+    }
+
     @Override
-    public void openSignEditor(Player player, String[] lines, Object[] adventureLines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
+    public void openSignEditor(Player player, String[] textLines, Object[] adventureLines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
         ServerPlayer p = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl conn = p.connection;
 
@@ -54,25 +74,9 @@ public class MojangWrapper1_21_R1 implements VersionWrapper {
         SignText signText = sign.getText(true) // flag = front/back of sign
                 .setColor(net.minecraft.world.item.DyeColor.valueOf(color.toString()));
 
-        Component[] linesToSet = new Component[4];
-        if (adventureLines != null) {
-            for (int i = 0; i < adventureLines.length; i++) {
-                Object line = adventureLines[i];
-                if (line instanceof net.kyori.adventure.text.Component component) {
-                    linesToSet[i] = new AdventureComponent(component);
-                } else if (line == null) {
-                    linesToSet[i] = Component.empty();
-                } else {
-                    throw new IllegalArgumentException("line at index " + i + " is not net.kyori.adventure.text.Component");
-                }
-            }
-        } else {
-            for (int i = 0; i < lines.length; i++)
-                linesToSet[i] = Component.nullToEmpty(lines[i]);
-        }
-
-        for (int i = 0; i < linesToSet.length; i++)
-            signText = signText.setMessage(i, linesToSet[i]);
+        Component[] lines = createLines(textLines, adventureLines);
+        for (int i = 0; i < lines.length; i++)
+            signText = signText.setMessage(i, lines[i]);
         sign.setText(signText, true);
 
         boolean schedule = false;
@@ -132,13 +136,13 @@ public class MojangWrapper1_21_R1 implements VersionWrapper {
     }
 
     @Override
-    public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+    public void displayNewLines(Player player, SignEditor signEditor, String[] textLines, Object[] adventureLines) {
         SignBlockEntity sign = (SignBlockEntity)signEditor.getSign();
 
         SignText newSignText = sign.getText(true);
-        for(int i = 0; i < lines.length; ++i) {
-            newSignText = newSignText.setMessage(i, Component.nullToEmpty(lines[i]));
-        }
+        Component[] lines = createLines(textLines, adventureLines);
+        for(int i = 0; i < textLines.length; ++i)
+            newSignText = newSignText.setMessage(i, lines[i]);
         sign.setText(newSignText, true);
 
         ServerPlayer p = ((CraftPlayer)player).getHandle();

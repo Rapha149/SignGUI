@@ -198,15 +198,18 @@ public class SignGUI {
      * This is called when {@link SignGUIAction#displayNewLines(String...)} is returned as an action after the player has finished editing.
      *
      * @param lines The lines, must be exactly 4.
+     * @param adventureLines The lines using Adventure components (1.20.5+). Must be exactly 4. May be null.
      * @throws java.lang.IllegalArgumentException If lines is null or not exactly 4 lines.
      * @throws SignGUIException                   If an error occurs while setting the lines.
      */
-    void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+    void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines) {
         Validate.notNull(lines, "The lines cannot be null");
         Validate.isTrue(lines.length == 4, "The lines must have a length of 4");
+        if (adventureLines != null)
+            Validate.isTrue(adventureLines.length == 4, "The adventure lines must null or have a length of 4");
 
         try {
-            WRAPPER.displayNewLines(player, signEditor, lines);
+            WRAPPER.displayNewLines(player, signEditor, lines, adventureLines);
         } catch (Exception e) {
             throw new SignGUIException("Failed to display new lines", e);
         }
