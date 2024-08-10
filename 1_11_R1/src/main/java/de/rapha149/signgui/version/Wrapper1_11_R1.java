@@ -31,7 +31,7 @@ public class Wrapper1_11_R1 implements VersionWrapper {
     }
 
     @Override
-    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
+    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);

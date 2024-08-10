@@ -154,5 +154,9 @@ Because of that you may encounter the problem that the sign does not display any
 But even with a 20 tick (1 second) delay after the PlayerJoinEvent, the sign in my tests was empty sometimes.  
 I would recommend waiting at least a few more seconds before opening the gui.
 
+### Not being able to change the glow status when displaying new lines
+At least to my knowledge it is not possible to change whether the sign's text glows when displaying new lines using the respective SignGUIAction.
+To do this you would need to construct and open a new SignGUI.
+
 ## Credits
 This project's structure was inspired by WesJD's [AnvilGUI](https://github.com/WesJD/AnvilGUI) and I used some code from Cleymax's [SignGUI](https://github.com/Cleymax/SignGUI).

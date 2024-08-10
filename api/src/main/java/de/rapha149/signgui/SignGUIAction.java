@@ -1,11 +1,9 @@
 package de.rapha149.signgui;
 
-import de.rapha149.signgui.version.VersionWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -16,7 +14,7 @@ import java.util.Arrays;
 public interface SignGUIAction {
 
     /**
-     * @return The {@link SignGUIActionInfo} instance containing information about this action
+     * @return The {@link de.rapha149.signgui.SignGUIAction.SignGUIActionInfo} instance containing information about this action
      */
     SignGUIActionInfo getInfo();
 
@@ -24,7 +22,7 @@ public interface SignGUIAction {
      * Called to execute the actions after the player finished editing the sign.
      *
      * @param gui    The {@link SignGUI} instance
-     * @param signEditor The {@link SignEditor} instance containing information relevant to the {@link VersionWrapper}
+     * @param signEditor The {@link SignEditor} instance containing information relevant to the {@link de.rapha149.signgui.version.VersionWrapper}
      * @param player The player who edited the sign
      */
     void execute(SignGUI gui, SignEditor signEditor, Player player);
@@ -57,7 +55,7 @@ public interface SignGUIAction {
 
     /**
      * Creates a new SignGUIAction that opens an inventory.
-     * The inventory is opened synchronously by calling the method {@link org.bukkit.scheduler.BukkitScheduler#runTask(Plugin, Runnable)}
+     * The inventory is opened synchronously by calling the method {@link org.bukkit.scheduler.BukkitScheduler#runTask(org.bukkit.plugin.Plugin, Runnable)}
      *
      * @param plugin    Your {@link org.bukkit.plugin.java.JavaPlugin} instance
      * @param inventory The inventory to open

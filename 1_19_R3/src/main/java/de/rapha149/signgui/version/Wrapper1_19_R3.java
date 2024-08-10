@@ -56,7 +56,7 @@ public class Wrapper1_19_R3 implements VersionWrapper {
     }
 
     @Override
-    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws IllegalAccessException {
+    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws IllegalAccessException {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.b;
 
@@ -73,6 +73,7 @@ public class Wrapper1_19_R3 implements VersionWrapper {
 
         TileEntitySign sign = new TileEntitySign(pos, null);
         sign.a(EnumColor.valueOf(color.toString()));
+        sign.b(glow);
         for (int i = 0; i < lines.length; i++)
             sign.a(i, IChatBaseComponent.a(lines[i]));
 

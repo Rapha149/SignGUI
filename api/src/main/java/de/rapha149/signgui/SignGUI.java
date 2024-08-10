@@ -93,6 +93,7 @@ public class SignGUI {
     private final String[] lines;
     private final Material type;
     private final DyeColor color;
+    private final boolean glow;
     private final Location signLoc;
     private final SignGUIFinishHandler handler;
     private final boolean callHandlerSynchronously;
@@ -101,10 +102,11 @@ public class SignGUI {
     /**
      * Constructs a new SignGUI. Use {@link SignGUI#builder()} to get a new instance.
      */
-    SignGUI(String[] lines, Material type, DyeColor color, Location signLoc, SignGUIFinishHandler handler, boolean callHandlerSynchronously, JavaPlugin plugin) {
+    SignGUI(String[] lines, Material type, DyeColor color, boolean glow, Location signLoc, SignGUIFinishHandler handler, boolean callHandlerSynchronously, JavaPlugin plugin) {
         this.lines = lines;
         this.type = type;
         this.color = color;
+        this.glow = glow;
         this.signLoc = signLoc;
         this.handler = handler;
         this.callHandlerSynchronously = callHandlerSynchronously;
@@ -124,7 +126,7 @@ public class SignGUI {
         Validate.notNull(player, "The player cannot be null");
 
         try {
-            WRAPPER.openSignEditor(player, lines, type, color, signLoc, (signEditor, resultLines) -> {
+            WRAPPER.openSignEditor(player, lines, type, color, glow, signLoc, (signEditor, resultLines) -> {
                 Runnable runnable = () -> {
                     Runnable close = () -> WRAPPER.closeSignEditor(player, signEditor);
                     List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));

@@ -16,6 +16,7 @@ public class SignGUIBuilder {
     private String[] lines = new String[4];
     private Material type = SignGUI.WRAPPER.getDefaultType();
     private DyeColor color = DyeColor.BLACK;
+    private boolean glow = false;
     private Location loc;
     private SignGUIFinishHandler handler;
     private boolean callHandlerSynchronously = false;
@@ -82,6 +83,17 @@ public class SignGUIBuilder {
     }
 
     /**
+     * Sets if the sign's text should glow. (1.17+)
+     *
+     * @param glow If the sign's text should glow.
+     * @return The {@link SignGUIBuilder} instance
+     */
+    public SignGUIBuilder setGlow(boolean glow) {
+        this.glow = glow;
+        return this;
+    }
+
+    /**
      * Sets the location of the sign. Set to null for the default location which is a few blocks behind the player.
      *
      * @param loc The location.
@@ -125,6 +137,6 @@ public class SignGUIBuilder {
      */
     public SignGUI build() {
         Validate.notNull(handler, "handler must be set");
-        return new SignGUI(lines, type, color, loc, handler, callHandlerSynchronously, plugin);
+        return new SignGUI(lines, type, color, glow, loc, handler, callHandlerSynchronously, plugin);
     }
 }
