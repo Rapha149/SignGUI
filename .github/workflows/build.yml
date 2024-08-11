@@ -24,6 +24,9 @@ jobs:
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
         gpg-passphrase: GPG_PASSPHRASE
 
+    - name: Initialize Paper NMS
+      run: for file in $(grep -l '<artifactId>paper-nms</artifactId>' $(find -name 'pom.xml')); do mvn -B paper-nms:init --file "$file"; done
+
     - name: Build the dependencies of the api
       run: mvn -B install --file pom.xml -pl '!api'
 
