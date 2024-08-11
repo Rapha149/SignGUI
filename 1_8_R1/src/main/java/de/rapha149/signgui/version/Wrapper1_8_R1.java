@@ -33,7 +33,7 @@ public class Wrapper1_8_R1 implements VersionWrapper {
     }
 
     @Override
-    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws NoSuchFieldException, IllegalAccessException {
+    public void openSignEditor(Player player, String[] lines, Object[] adventureLines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws NoSuchFieldException, IllegalAccessException {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.playerConnection;
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
@@ -104,7 +104,7 @@ public class Wrapper1_8_R1 implements VersionWrapper {
     }
 
     @Override
-    public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+    public void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines) {
         TileEntitySign sign = (TileEntitySign) signEditor.getSign();
         for (int i = 0; i < lines.length; i++)
             sign.lines[i] = new ChatComponentText(lines[i] != null ? lines[i] : "");

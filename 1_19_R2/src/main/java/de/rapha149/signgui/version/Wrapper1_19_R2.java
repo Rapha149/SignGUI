@@ -39,7 +39,7 @@ public class Wrapper1_19_R2 implements VersionWrapper {
     }
 
     @Override
-    public void openSignEditor(Player player, String[] lines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
+    public void openSignEditor(Player player, String[] lines, Object[] adventureLines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.b;
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
@@ -105,7 +105,7 @@ public class Wrapper1_19_R2 implements VersionWrapper {
     }
 
     @Override
-    public void displayNewLines(Player player, SignEditor signEditor, String[] lines) {
+    public void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines) {
         TileEntitySign sign = (TileEntitySign) signEditor.getSign();
         for (int i = 0; i < lines.length; i++)
             sign.a(i, IChatBaseComponent.a(lines[i]));

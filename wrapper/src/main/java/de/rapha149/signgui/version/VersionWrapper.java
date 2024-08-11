@@ -39,7 +39,7 @@ public interface VersionWrapper {
      * @param signLoc  The location where the sign should be placed. Can be null for default.
      * @param onFinish The {@link java.util.function.BiConsumer} which is called when the player finished editing the sign.
      */
-    void openSignEditor(Player player, String[] lines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws Exception;
+    void openSignEditor(Player player, String[] lines, Object[] adventureLines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws Exception;
 
     /**
      * Called when the lines of a sign should be updated.
@@ -48,7 +48,7 @@ public interface VersionWrapper {
      * @param signEditor The sign editor.
      * @param lines The new lines.
      */
-    void displayNewLines(Player player, SignEditor signEditor, String[] lines);
+    void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines);
 
     /**
      * Called when the sign editor should be closed.

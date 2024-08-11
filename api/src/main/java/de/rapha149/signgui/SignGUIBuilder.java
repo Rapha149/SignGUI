@@ -8,12 +8,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Arrays;
+
 /**
  * Builder for {@link SignGUI}.
  */
 public class SignGUIBuilder {
 
     private String[] lines = new String[4];
+    private Object[] adventureLines = null;
     private Material type = SignGUI.WRAPPER.getDefaultType();
     private DyeColor color = DyeColor.BLACK;
     private boolean glow = false;
@@ -37,7 +40,7 @@ public class SignGUIBuilder {
      */
     public SignGUIBuilder setLines(String... lines) {
         Validate.notNull(lines, "The lines cannot be null");
-        this.lines = lines;
+        this.lines = Arrays.copyOf(lines, 4);
         return this;
     }
 
@@ -52,6 +55,39 @@ public class SignGUIBuilder {
     public SignGUIBuilder setLine(int index, String line) {
         Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
         lines[index] = line;
+        return this;
+    }
+
+    /**
+     * Sets the lines that are shown on the sign using an Adventure component (1.20.5+)
+     * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
+     * It is recommended to also set fallback lines using {@link #setLines(String...)} as these will be used if the Adventure components cannot be used for some reason.
+     *
+     * @param adventureLines The lines, may be less than 4.
+     * @return The {@link SignGUIBuilder} instance
+     * @throws java.lang.IllegalArgumentException If lines is null.
+     */
+    public SignGUIBuilder setAdventureLines(Object... adventureLines) {
+        Validate.notNull(adventureLines, "The adventure lines cannot be null");
+        this.adventureLines = Arrays.copyOf(adventureLines, 4);
+        return this;
+    }
+
+    /**
+     * Sets a specific line that is shown on the sign using an Adventure component (1.20.5+)
+     * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
+     * It is recommended to also set fallback lines using {@link #setLine(int, String)} as these will be used if the Adventure components cannot be used for some reason.
+     *
+     * @param index The index of the line.
+     * @param component  Adventure component
+     * @return The {@link SignGUIBuilder} instance
+     * @throws java.lang.IllegalArgumentException If the index is below 0 or above 4.
+     */
+    public SignGUIBuilder setAdventureLine(int index, Object component) {
+        Validate.isTrue(index >= 0 && index <= 3, "Index out of range");
+        if (adventureLines == null)
+            adventureLines = new Object[4];
+        adventureLines[index] = component;
         return this;
     }
 
@@ -137,6 +173,6 @@ public class SignGUIBuilder {
      */
     public SignGUI build() {
         Validate.notNull(handler, "handler must be set");
-        return new SignGUI(lines, type, color, glow, loc, handler, callHandlerSynchronously, plugin);
+        return new SignGUI(lines, adventureLines, type, color, glow, loc, handler, callHandlerSynchronously, plugin);
     }
 }
