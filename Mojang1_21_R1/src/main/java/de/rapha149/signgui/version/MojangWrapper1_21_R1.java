@@ -14,6 +14,7 @@ import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 import org.bukkit.DyeColor;
@@ -70,7 +71,7 @@ public class MojangWrapper1_21_R1 implements VersionWrapper {
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPos pos = new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
-        SignBlockEntity sign = new SignBlockEntity(pos, null);
+        SignBlockEntity sign = new SignBlockEntity(pos, Blocks.OAK_SIGN.defaultBlockState());
         SignText signText = sign.getText(true) // flag = front/back of sign
                 .setColor(net.minecraft.world.item.DyeColor.valueOf(color.toString()))
                 .setHasGlowingText(glow);

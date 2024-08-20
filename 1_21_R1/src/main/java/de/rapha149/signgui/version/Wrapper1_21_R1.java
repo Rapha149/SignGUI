@@ -16,6 +16,7 @@ import net.minecraft.server.network.PlayerConnection;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.world.item.EnumColor;
 import net.minecraft.world.level.World;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.entity.TileEntitySign;
 import org.bukkit.DyeColor;
@@ -76,7 +77,7 @@ public class Wrapper1_21_R1 implements VersionWrapper {
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
-        TileEntitySign sign = new TileEntitySign(pos, null);
+        TileEntitySign sign = new TileEntitySign(pos, Blocks.cE.o());
         SignText signText = sign.a(true) // flag = front/back of sign
                 .a(EnumColor.valueOf(color.toString()))
                 .a(glow);
