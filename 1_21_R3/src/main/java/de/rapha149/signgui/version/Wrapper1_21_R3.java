@@ -102,6 +102,7 @@ public class Wrapper1_21_R3 implements VersionWrapper {
         Runnable runnable = () -> {
             player.sendBlockChange(loc, type.createBlockData());
             sign.a(p.cU());
+            conn.b(sign.s());
             sign.a((World) null);
             conn.b(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign
 
@@ -152,7 +153,7 @@ public class Wrapper1_21_R3 implements VersionWrapper {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.f;
         sign.a(p.cU());
-        //conn.b(sign.t());
+        conn.b(sign.s());
         sign.a((World) null);
         conn.b(new PacketPlayOutOpenSignEditor((BlockPosition) signEditor.getBlockPosition(), true));
     }
