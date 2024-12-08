@@ -42,6 +42,8 @@
         <module>Mojang1_21_R1</module>
         <module>1_21_R2</module>
         <module>Mojang1_21_R2</module>
+        <module>1_21_R3</module>
+        <module>Mojang1_21_R3</module>
     </modules>
 
     <properties>
