@@ -1,7 +1,7 @@
 package de.rapha149.signgui.exception;
 
 /**
- * An exception thrown when the server version is not supported by this api or the support for this version failed to load.
+ * An exception thrown when the server version is not supported by this api or an error occured during initialization.
  */
 public class SignGUIVersionException extends Exception {
 

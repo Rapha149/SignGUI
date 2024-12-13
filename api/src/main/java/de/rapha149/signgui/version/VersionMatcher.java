@@ -14,11 +14,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.stream.Collectors;
 
+/**
+ * A utility class to get the version wrapper for the server version.
+ */
 public class VersionMatcher {
 
     private static boolean initialized;
     private static VersionWrapper wrapper;
 
+    /**
+     * Returns the appropriate version wrapper for the current server version.
+     * If this method is called for the first time, the wrapper is initialized beforehand.
+     *
+     * @return The {@link VersionWrapper} instance
+     * @throws SignGUIVersionException If the server version is not supported by this api or an error occured during initialization.
+     */
     public static VersionWrapper getWrapper() throws SignGUIVersionException {
         if (!initialized) {
             initialized = true;
@@ -26,12 +36,15 @@ public class VersionMatcher {
         } else if (wrapper == null) {
             throw new SignGUIVersionException("The previous attempt to initialize the version wrapper failed. " +
                                               "This could be because this server version is not supported or " +
-                                              "because the support for this server version failed to load.");
+                                              "because an error occured during initialization.");
         } else {
             return wrapper;
         }
     }
 
+    /**
+     * Internal method to initialize the version wrapper.
+     */
     private static VersionWrapper initWrapper() throws SignGUIVersionException {
         String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
 
