@@ -1,7 +1,9 @@
 package de.rapha149.signgui;
 
 import de.rapha149.signgui.SignGUIAction.SignGUIActionInfo;
-import de.rapha149.signgui.version.VersionWrapper;
+import de.rapha149.signgui.exception.SignGUIException;
+import de.rapha149.signgui.exception.SignGUIVersionException;
+import de.rapha149.signgui.version.VersionMatcher;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -9,108 +11,22 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The base class of this api. Use {@link SignGUI#builder()} to get a new instance.
  */
 public class SignGUI {
 
-    static final VersionWrapper WRAPPER;
-    static final String availableSignTypes;
-
-    private static boolean useMojangMappings(String version) {
-        try {
-            Class.forName("com.destroystokyo.paper.ParticleBuilder");
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
-
-        final String[] versionNumbers = version.replace("R", "").split("_");
-        int major = Integer.parseInt(versionNumbers[1]);
-        int minor = versionNumbers.length > 2 ? Integer.parseInt(versionNumbers[2]) : 0;
-        if (major == 20 && minor == 4)
-            return true; // 1.20.5/6
-        return major > 20; // >= 1.21
-    }
-
-    static {
-        String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
-
-        String version = null;
-        if (!craftBukkitPackage.contains(".v")) { // cb package not relocated (i.e. paper 1.20.5+)
-            String bukkitVersion = Bukkit.getBukkitVersion();
-
-            try {
-                HttpURLConnection conn = (HttpURLConnection) new URL("https://raw.githubusercontent.com/Rapha149/NMSVersions/main/nms-versions.json").openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setRequestMethod("GET");
-                conn.connect();
-
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                    JSONObject json = (JSONObject) new JSONParser().parse(br.lines().collect(Collectors.joining()));
-                    if (json.containsKey(bukkitVersion))
-                        version = (String) json.get(bukkitVersion);
-                }
-            } catch (IOException | ParseException e) {
-                Bukkit.getLogger().warning("[SignGUI] Can't access online NMS versions list, falling back to hardcoded NMS versions. These could be outdated.");
-            }
-
-            if (version == null) {
-                // separating major and minor versions, example: 1.20.4-R0.1-SNAPSHOT -> major = 20, minor = 4
-                final String[] versionNumbers = bukkitVersion.split("-")[0].split("\\.");
-                int major = Integer.parseInt(versionNumbers[1]);
-                int minor = versionNumbers.length > 2 ? Integer.parseInt(versionNumbers[2]) : 0;
-
-                if (major == 20 && minor >= 5) { // 1.20.5, 1.20.6
-                    version = "1_20_R4";
-                } else if (major == 21 && minor == 0) { // 1.21
-                    version = "1_21_R1";
-                } else {
-                    throw new IllegalStateException("SignGUI does not support bukkit server version \"" + bukkitVersion + "\"");
-                }
-            }
-        } else {
-            version = craftBukkitPackage.split("\\.")[3].substring(1);
-        }
-
-        final String className;
-        if (useMojangMappings(version)) {
-            className = VersionWrapper.class.getPackage().getName() + ".MojangWrapper" + version;
-        } else {
-            className = VersionWrapper.class.getPackage().getName() + ".Wrapper" + version;
-        }
-
-        try {
-            WRAPPER = (VersionWrapper) Class.forName(className).getDeclaredConstructor().newInstance();
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
-                 InvocationTargetException exception) {
-            throw new IllegalStateException("Failed to load support for server version " + version, exception);
-        } catch (ClassNotFoundException exception) {
-            throw new IllegalStateException("SignGUI does not support the server version \"" + version + "\"", exception);
-        }
-
-        availableSignTypes = WRAPPER.getSignTypes().stream().map(Material::toString).collect(Collectors.joining(", "));
-    }
-
     /**
      * Constructs a new SignGUIBuilder.
      *
      * @return The new {@link SignGUIBuilder} instance
+     * @throws SignGUIVersionException If the server version is not supported by this api.
      */
-    public static SignGUIBuilder builder() {
-        return new SignGUIBuilder();
+    public static SignGUIBuilder builder() throws SignGUIVersionException {
+        return new SignGUIBuilder(VersionMatcher.getWrapper());
     }
 
     private final String[] lines;
@@ -145,15 +61,21 @@ public class SignGUI {
      * It is recommended to avoid opening a sign gui for a player that already has one open.
      *
      * @param player The player to open the gui for.
-     * @throws SignGUIException If an error occurs while opening the gui.
+     * @throws de.rapha149.signgui.exception.SignGUIException If an error occurs while opening the gui.
      */
     public void open(Player player) throws SignGUIException {
         Validate.notNull(player, "The player cannot be null");
 
         try {
-            WRAPPER.openSignEditor(player, lines, adventureLines, type, color, glow, signLoc, (signEditor, resultLines) -> {
+            VersionMatcher.getWrapper().openSignEditor(player, lines, adventureLines, type, color, glow, signLoc, (signEditor, resultLines) -> {
                 Runnable runnable = () -> {
-                    Runnable close = () -> WRAPPER.closeSignEditor(player, signEditor);
+                    Runnable close = () -> {
+                        try {
+                            VersionMatcher.getWrapper().closeSignEditor(player, signEditor);
+                        } catch (SignGUIVersionException e) {
+                            throw new SignGUIException("Failed to close sign editor", e);
+                        }
+                    };
                     List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));
 
                     if (actions == null || actions.isEmpty()) {
@@ -171,7 +93,7 @@ public class SignGUI {
                             SignGUIActionInfo otherInfo = otherAction.getInfo();
                             if (info.isConflicting(otherInfo)) {
                                 close.run();
-                                throw new SignGUIException("The actions " + info.getName() + " and " + otherInfo.getName() + " are conflicting");
+                                throw new IllegalArgumentException("The actions " + info.getName() + " and " + otherInfo.getName() + " are conflicting");
                             }
                         }
 
@@ -211,7 +133,7 @@ public class SignGUI {
             Validate.isTrue(adventureLines.length == 4, "The adventure lines must null or have a length of 4");
 
         try {
-            WRAPPER.displayNewLines(player, signEditor, lines, adventureLines);
+            VersionMatcher.getWrapper().displayNewLines(player, signEditor, lines, adventureLines);
         } catch (Exception e) {
             throw new SignGUIException("Failed to display new lines", e);
         }

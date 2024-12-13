@@ -1,4 +1,4 @@
-package de.rapha149.signgui;
+package de.rapha149.signgui.exception;
 
 /**
  * An exception thrown when an error occurs while using this api.

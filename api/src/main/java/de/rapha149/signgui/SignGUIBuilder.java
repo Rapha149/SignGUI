@@ -1,5 +1,6 @@
 package de.rapha149.signgui;
 
+import de.rapha149.signgui.version.VersionWrapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -9,15 +10,25 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Builder for {@link SignGUI}.
  */
 public class SignGUIBuilder {
 
+    private static String availableSignTypes;
+
+    private static String getAvailableSignTypes(VersionWrapper wrapper) {
+        if (availableSignTypes == null)
+            availableSignTypes = wrapper.getSignTypes().stream().map(Material::toString).collect(Collectors.joining(", "));
+        return availableSignTypes;
+    }
+
+    private VersionWrapper wrapper;
     private String[] lines = new String[4];
     private Object[] adventureLines = null;
-    private Material type = SignGUI.WRAPPER.getDefaultType();
+    private Material type;
     private DyeColor color = DyeColor.BLACK;
     private boolean glow = false;
     private Location loc;
@@ -28,7 +39,9 @@ public class SignGUIBuilder {
     /**
      * Constructs a new SignGUIBuilder. Use {@link SignGUI#builder()} to get a new instance.
      */
-    SignGUIBuilder() {
+    SignGUIBuilder(VersionWrapper wrapper) {
+        this.wrapper = wrapper;
+        this.type = wrapper.getDefaultType();
     }
 
     /**
@@ -100,7 +113,7 @@ public class SignGUIBuilder {
      */
     public SignGUIBuilder setType(Material type) {
         Validate.notNull(type, "The type cannot be null");
-        Validate.isTrue(SignGUI.WRAPPER.getSignTypes().contains(type), type + " is not a sign type. Available sign types: " + SignGUI.availableSignTypes);
+        Validate.isTrue(wrapper.getSignTypes().contains(type), type + " is not a sign type. Available sign types: " + getAvailableSignTypes(wrapper));
         this.type = type;
         return this;
     }
