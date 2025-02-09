@@ -74,65 +74,72 @@ There are two solution to this problem:
 ## Usage
 To open a sign editor gui for a player, do the following:
 ```java
-SignGUI gui = SignGUI.builder()
-    // set lines
-    .setLines("§6Line 1", null, "§6Line 3")
-
-    // set specific line, starting index is 0
-    .setLine(3, "Line 4")
-
-    // set the sign type
-    .setType(Material.DARK_OAK_SIGN)
-
-    // set the sign color
-    .setColor(DyeColor.YELLOW)
-
-    // set the handler/listener (called when the player finishes editing)
-    .setHandler((p, result) -> {
-        // get a speficic line, starting index is 0
-        String line0 = result.getLine(0);
-
-        // get a specific line without color codes
-        String line1 = result.getLineWithoutColor(1);
-
-        // get all lines
-        String[] lines = result.getLines();
-
-        // get all lines without color codes
-        String[] linesWithoutColor = result.getLinesWithoutColor();
-
-        if (line1.isEmpty()) {
-            // The user has not entered anything on line 2, so we open the sign again
-            return List.of(SignGUIAction.displayNewLines("§6Line 1", null, "§6Line 3", "Line 4"));
-        }
-
-        if (line1.equals("inv")) {
-            // close the sign and open an inventory
-            return List.of(
-                // "this" = your JavaPlugin instance
-                SignGUIAction.openInventory(this, Bukkit.createInventory(player, 27)),
-                SignGUIAction.run(() -> player.sendMessage("Inventory opened!"))
-            );
-        }
-
-        // Just close the sign by not returning any actions
-        return Collections.emptyList();
-    })
-
-    // build the SignGUI
-    .build();
-
-// open the sign
-gui.open(player);
-
-// you can also open the sign for multiple players
-gui.open(player2);
+try {
+    SignGUI gui = SignGUI.builder()
+        // set lines
+        .setLines("§6Line 1", null, "§6Line 3")
+    
+        // set specific line, starting index is 0
+        .setLine(3, "Line 4")
+    
+        // set the sign type
+        .setType(Material.DARK_OAK_SIGN)
+    
+        // set the sign color
+        .setColor(DyeColor.YELLOW)
+    
+        // set the handler/listener (called when the player finishes editing)
+        .setHandler((p, result) -> {
+            // get a speficic line, starting index is 0
+            String line0 = result.getLine(0);
+    
+            // get a specific line without color codes
+            String line1 = result.getLineWithoutColor(1);
+    
+            // get all lines
+            String[] lines = result.getLines();
+    
+            // get all lines without color codes
+            String[] linesWithoutColor = result.getLinesWithoutColor();
+    
+            if (line1.isEmpty()) {
+                // The user has not entered anything on line 2, so we open the sign again
+                return List.of(SignGUIAction.displayNewLines("§6Line 1", null, "§6Line 3", "Line 4"));
+            }
+    
+            if (line1.equals("inv")) {
+                // close the sign and open an inventory
+                return List.of(
+                    // "this" = your JavaPlugin instance
+                    SignGUIAction.openInventory(this, Bukkit.createInventory(player, 27)),
+                    SignGUIAction.run(() -> player.sendMessage("Inventory opened!"))
+                );
+            }
+    
+            // Just close the sign by not returning any actions
+            return Collections.emptyList();
+        })
+    
+        // build the SignGUI
+        .build();
+    
+    // open the sign
+    gui.open(player);
+    
+    // you can also open the sign for multiple players
+    gui.open(player2);
+} catch (SignGUIVersionException e) {
+    // This error is thrown if SignGUI does not support this server version (yet).
+}
 ```
 
 You don't have to call all methods. Only `setHandler` is mandatory.
 
 By default, the handler is called by an asynchronous thread. You can change that behaviour by calling the method `callHandlerSynchronously` of the builder.
 An explanation for the different methods can be found on the [Javadoc](https://javadoc.io/doc/de.rapha149.signgui/signgui).
+
+Also: as you can see the code catches the `SignGUIVersionException` which could be thrown by `SignGUI.builder()` if the api does not support the Minecraft version of the server.
+If you're interested in why this exception exists, check the [release notes](https://github.com/Rapha149/SignGUI/releases/tag/v2.5.0).  
 
 ## Limitations
 
