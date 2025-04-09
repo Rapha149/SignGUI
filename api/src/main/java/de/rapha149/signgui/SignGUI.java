@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The base class of this api. Use {@link SignGUI#builder()} to get a new instance.
@@ -25,8 +26,11 @@ public class SignGUI {
      * @return The new {@link SignGUIBuilder} instance
      * @throws SignGUIVersionException If the server version is not supported by this api.
      */
-    public static SignGUIBuilder builder() throws SignGUIVersionException {
-        return new SignGUIBuilder(VersionMatcher.getWrapper());
+    public static void builderAsync(Consumer<SignGUIBuilder> callback, Consumer<Exception> errorCallback) {
+        VersionMatcher.getWrapperAsync(wrapper -> {
+            // Once the wrapper is successfully loaded, create and pass the builder.
+            callback.accept(new SignGUIBuilder(wrapper));
+        }, errorCallback);
     }
 
     private final String[] lines;
@@ -37,7 +41,7 @@ public class SignGUI {
     private final Location signLoc;
     private final SignGUIFinishHandler handler;
     private final boolean callHandlerSynchronously;
-    private final JavaPlugin plugin;
+    public static final JavaPlugin plugin;
 
     /**
      * Constructs a new SignGUI. Use {@link SignGUI#builder()} to get a new instance.
@@ -67,50 +71,59 @@ public class SignGUI {
         Validate.notNull(player, "The player cannot be null");
 
         try {
-            VersionMatcher.getWrapper().openSignEditor(player, lines, adventureLines, type, color, glow, signLoc, (signEditor, resultLines) -> {
-                Runnable runnable = () -> {
-                    Runnable close = () -> {
-                        try {
-                            VersionMatcher.getWrapper().closeSignEditor(player, signEditor);
-                        } catch (SignGUIVersionException e) {
-                            throw new SignGUIException("Failed to close sign editor", e);
-                        }
-                    };
-                    List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));
+            VersionMatcher.getWrapperAsync(wrapper -> {
+                try {
+                    wrapper.openSignEditor(player, lines, adventureLines, type, color, glow, signLoc,
+                            (signEditor, resultLines) -> {
+                                Runnable runnable = () -> {
+                                    Runnable close = () -> {
+                                        wrapper.closeSignEditor(player, signEditor);
+                                    };
 
-                    if (actions == null || actions.isEmpty()) {
-                        close.run();
-                        return;
-                    }
+                                    List<SignGUIAction> actions = handler.onFinish(player, new SignGUIResult(resultLines));
 
-                    boolean keepOpen = false;
-                    for (SignGUIAction action : actions) {
-                        SignGUIActionInfo info = action.getInfo();
-                        for (SignGUIAction otherAction : actions) {
-                            if (action == otherAction)
-                                continue;
+                                    if (actions == null || actions.isEmpty()) {
+                                        close.run();
+                                        return;
+                                    }
 
-                            SignGUIActionInfo otherInfo = otherAction.getInfo();
-                            if (info.isConflicting(otherInfo)) {
-                                close.run();
-                                throw new IllegalArgumentException("The actions " + info.getName() + " and " + otherInfo.getName() + " are conflicting");
+                                    boolean keepOpen = false;
+                                    for (SignGUIAction action : actions) {
+                                        SignGUIActionInfo info = action.getInfo();
+                                        for (SignGUIAction otherAction : actions) {
+                                            if (action == otherAction)
+                                                continue;
+
+                                            SignGUIActionInfo otherInfo = otherAction.getInfo();
+                                            if (info.isConflicting(otherInfo)) {
+                                                close.run();
+                                                throw new IllegalArgumentException("The actions " + info.getName() + " and " + otherInfo.getName() + " are conflicting");
+                                            }
+                                        }
+
+                                        if (info.isKeepOpen())
+                                            keepOpen = true;
+                                    }
+
+                                    if (!keepOpen)
+                                        close.run();
+
+                                    for (SignGUIAction action : actions)
+                                        action.execute(this, signEditor, player);
+                                };
+
+                                // Execute the runnable either synchronously on the main thread or immediately in the current thread.
+                                if (callHandlerSynchronously)
+                                    Bukkit.getScheduler().runTask(SignGUI.plugin, runnable);
+                                else
+                                    runnable.run();
                             }
-                        }
-
-                        if (info.isKeepOpen())
-                            keepOpen = true;
-                    }
-
-                    if (!keepOpen)
-                        close.run();
-                    for (SignGUIAction action : actions)
-                        action.execute(this, signEditor, player);
-                };
-
-                if (callHandlerSynchronously)
-                    Bukkit.getScheduler().runTask(plugin, runnable);
-                else
-                    runnable.run();
+                    );
+                } catch (Exception e) {
+                    throw new SignGUIException("Failed to open sign gui", e);
+                }
+            }, error -> {
+                throw new SignGUIException("Failed to initialize version wrapper", error);
             });
         } catch (Exception e) {
             throw new SignGUIException("Failed to open sign gui", e);
@@ -129,13 +142,21 @@ public class SignGUI {
     void displayNewLines(Player player, SignEditor signEditor, String[] lines, Object[] adventureLines) {
         Validate.notNull(lines, "The lines cannot be null");
         Validate.isTrue(lines.length == 4, "The lines must have a length of 4");
-        if (adventureLines != null)
+        if (adventureLines != null) {
             Validate.isTrue(adventureLines.length == 4, "The adventure lines must null or have a length of 4");
-
-        try {
-            VersionMatcher.getWrapper().displayNewLines(player, signEditor, lines, adventureLines);
-        } catch (Exception e) {
-            throw new SignGUIException("Failed to display new lines", e);
         }
+
+        VersionMatcher.getWrapperAsync(
+                wrapper -> {
+                    try {
+                        wrapper.displayNewLines(player, signEditor, lines, adventureLines);
+                    } catch (Exception e) {
+                        throw new SignGUIException("Failed to display new lines", e);
+                    }
+                },
+                error -> {
+                    throw new SignGUIException("Failed to initialize version wrapper asynchronously", error);
+                }
+        );
     }
 }
