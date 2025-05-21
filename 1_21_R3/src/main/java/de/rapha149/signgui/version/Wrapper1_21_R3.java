@@ -57,7 +57,7 @@ public class Wrapper1_21_R3 implements VersionWrapper {
     public List<Material> getSignTypes() {
         return Arrays.asList(Material.OAK_SIGN, Material.BIRCH_SIGN, Material.SPRUCE_SIGN, Material.JUNGLE_SIGN,
                 Material.ACACIA_SIGN, Material.DARK_OAK_SIGN, Material.CRIMSON_SIGN, Material.WARPED_SIGN,
-                Material.CHERRY_SIGN, Material.MANGROVE_SIGN, Material.BAMBOO_SIGN
+                Material.CHERRY_SIGN, Material.MANGROVE_SIGN, Material.BAMBOO_SIGN, Material.PALE_OAK_SIGN
         );
     }
 
