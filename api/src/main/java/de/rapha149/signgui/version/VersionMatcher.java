@@ -2,25 +2,33 @@ package de.rapha149.signgui.version;
 
 import de.rapha149.signgui.exception.SignGUIVersionException;
 import org.bukkit.Bukkit;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A utility class to get the version wrapper for the server version.
  */
 public class VersionMatcher {
 
+    private static final Map<String, String> VERSIONS;
+    private static final String NEWEST_VERSION = "1_21_R4";
+
     private static boolean initialized;
     private static VersionWrapper wrapper;
+
+    static {
+        Map<String, String> versions = new HashMap<>();
+        versions.put("1.20.5", "1_21_R4");
+        versions.put("1.20.6", "1_21_R4");
+        versions.put("1.21.1", "1_21_R1");
+        versions.put("1.21.3", "1_21_R2");
+        versions.put("1.21.4", "1_21_R3");
+        versions.put("1.21.5", "1_21_R4");
+        VERSIONS = Collections.unmodifiableMap(versions);
+    }
 
     /**
      * Returns the appropriate version wrapper for the current server version.
@@ -47,43 +55,8 @@ public class VersionMatcher {
      */
     private static VersionWrapper initWrapper() throws SignGUIVersionException {
         String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
-
-        String version = null;
-        if (!craftBukkitPackage.contains(".v")) { // cb package not relocated (i.e. paper 1.20.5+)
-            String bukkitVersion = Bukkit.getBukkitVersion();
-
-            try {
-                HttpURLConnection conn = (HttpURLConnection) new URL("https://raw.githubusercontent.com/Rapha149/NMSVersions/main/nms-versions.json").openConnection();
-                conn.setConnectTimeout(10000);
-                conn.setRequestMethod("GET");
-                conn.connect();
-
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                    JSONObject json = (JSONObject) new JSONParser().parse(br.lines().collect(Collectors.joining()));
-                    if (json.containsKey(bukkitVersion))
-                        version = (String) json.get(bukkitVersion);
-                }
-            } catch (IOException | ParseException e) {
-                Bukkit.getLogger().warning("[SignGUI] Can't access online NMS versions list, falling back to hardcoded NMS versions. These could be outdated.");
-            }
-
-            if (version == null) {
-                // separating major and minor versions, example: 1.20.4-R0.1-SNAPSHOT -> major = 20, minor = 4
-                final String[] versionNumbers = bukkitVersion.split("-")[0].split("\\.");
-                int major = Integer.parseInt(versionNumbers[1]);
-                int minor = versionNumbers.length > 2 ? Integer.parseInt(versionNumbers[2]) : 0;
-
-                if (major == 20 && minor >= 5) { // 1.20.5, 1.20.6
-                    version = "1_20_R4";
-                } else if (major == 21 && minor == 0) { // 1.21
-                    version = "1_21_R1";
-                } else {
-                    throw new SignGUIVersionException("SignGUI does not support bukkit server version \"" + bukkitVersion + "\"");
-                }
-            }
-        } else {
-            version = craftBukkitPackage.split("\\.")[3].substring(1);
-        }
+        String version = craftBukkitPackage.contains(".v") ? craftBukkitPackage.split("\\.")[3].substring(1) :
+                VERSIONS.getOrDefault(Bukkit.getBukkitVersion().split("-")[0], NEWEST_VERSION);
 
         final String className;
         if (useMojangMappings(version)) {
