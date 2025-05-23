@@ -57,7 +57,7 @@ public class Wrapper1_21_R4 implements VersionWrapper {
     public List<Material> getSignTypes() {
         return Arrays.asList(Material.OAK_SIGN, Material.BIRCH_SIGN, Material.SPRUCE_SIGN, Material.JUNGLE_SIGN,
                 Material.ACACIA_SIGN, Material.DARK_OAK_SIGN, Material.CRIMSON_SIGN, Material.WARPED_SIGN,
-                Material.CHERRY_SIGN, Material.MANGROVE_SIGN, Material.BAMBOO_SIGN
+                Material.CHERRY_SIGN, Material.MANGROVE_SIGN, Material.BAMBOO_SIGN, Material.PALE_OAK_SIGN
         );
     }
 
@@ -77,7 +77,7 @@ public class Wrapper1_21_R4 implements VersionWrapper {
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
-        TileEntitySign sign = new TileEntitySign(pos, Blocks.cM.m());
+        TileEntitySign sign = new TileEntitySign(pos, Blocks.cP.m());
         SignText signText = sign.a(true) // flag = front/back of sign
                 .a(EnumColor.valueOf(color.toString()))
                 .a(glow);
