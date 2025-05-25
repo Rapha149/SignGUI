@@ -21,8 +21,8 @@ public class VersionMatcher {
 
     static {
         Map<String, String> versions = new HashMap<>();
-        versions.put("1.20.5", "1_21_R4");
-        versions.put("1.20.6", "1_21_R4");
+        versions.put("1.20.5", "1_20_R4");
+        versions.put("1.20.6", "1_20_R4");
         versions.put("1.21.1", "1_21_R1");
         versions.put("1.21.3", "1_21_R2");
         versions.put("1.21.4", "1_21_R3");
