@@ -101,7 +101,7 @@ public class Wrapper1_21_R2 implements VersionWrapper {
 
         Runnable runnable = () -> {
             player.sendBlockChange(loc, type.createBlockData());
-            sign.a(p.cU());
+            sign.a(p.dW());
             conn.b(sign.t());
             sign.a((World) null);
             conn.b(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign

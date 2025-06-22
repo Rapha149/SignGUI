@@ -152,7 +152,7 @@ public class Wrapper1_21_R3 implements VersionWrapper {
 
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.f;
-        sign.a(p.cU());
+        sign.a(p.dV());
         conn.b(sign.s());
         sign.a((World) null);
         conn.b(new PacketPlayOutOpenSignEditor((BlockPosition) signEditor.getBlockPosition(), true));
