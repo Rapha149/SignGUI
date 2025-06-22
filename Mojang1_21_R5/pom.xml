@@ -4,22 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>signgui-parent</artifactId>
-        <groupId>de.rapha149.signgui</groupId>
         <version>2.5.3</version>
+        <groupId>de.rapha149.signgui</groupId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>signgui-1_21_R1</artifactId>
+    <artifactId>signgui-1_21_R5-mojang</artifactId>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <dependencies>
+        <!-- plugins -> paper-nms -> init (https://github.com/Alvinn8/paper-nms-maven-plugin) -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <groupId>ca.bkaw</groupId>
+            <artifactId>paper-nms</artifactId>
+            <version>1.21.6-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -29,6 +30,13 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>bytecode.space</id>
+            <url>https://repo.bytecode.space/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
@@ -40,6 +48,11 @@
                     <source>21</source>
                     <target>21</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>ca.bkaw</groupId>
+                <artifactId>paper-nms-maven-plugin</artifactId>
+                <version>1.4.7</version>
             </plugin>
         </plugins>
     </build>
