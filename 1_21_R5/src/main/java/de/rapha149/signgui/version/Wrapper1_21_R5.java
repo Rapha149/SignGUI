@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.TileEntitySign;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
-public class Wrapper1_21_R2 implements VersionWrapper {
+public class Wrapper1_21_R5 implements VersionWrapper {
 
     private final Field NETWORK_MANAGER_FIELD;
 
@@ -57,14 +57,14 @@ public class Wrapper1_21_R2 implements VersionWrapper {
     public List<Material> getSignTypes() {
         return Arrays.asList(Material.OAK_SIGN, Material.BIRCH_SIGN, Material.SPRUCE_SIGN, Material.JUNGLE_SIGN,
                 Material.ACACIA_SIGN, Material.DARK_OAK_SIGN, Material.CRIMSON_SIGN, Material.WARPED_SIGN,
-                Material.CHERRY_SIGN, Material.MANGROVE_SIGN, Material.BAMBOO_SIGN
+                Material.CHERRY_SIGN, Material.MANGROVE_SIGN, Material.BAMBOO_SIGN, Material.PALE_OAK_SIGN
         );
     }
 
     @Override
     public void openSignEditor(Player player, String[] lines, Object[] adventureLines, Material type, DyeColor color, boolean glow, Location signLoc, BiConsumer<SignEditor, String[]> onFinish) throws IllegalAccessException {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
-        PlayerConnection conn = p.f;
+        PlayerConnection conn = p.g;
 
         if (NETWORK_MANAGER_FIELD == null)
             throw new IllegalStateException("Unable to find NetworkManager field in PlayerConnection class.");
@@ -77,7 +77,7 @@ public class Wrapper1_21_R2 implements VersionWrapper {
         Location loc = signLoc != null ? signLoc : getDefaultLocation(player);
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
-        TileEntitySign sign = new TileEntitySign(pos, Blocks.cM.m());
+        TileEntitySign sign = new TileEntitySign(pos, Blocks.cP.m());
         SignText signText = sign.a(true) // flag = front/back of sign
                 .a(EnumColor.valueOf(color.toString()))
                 .a(glow);
@@ -101,8 +101,8 @@ public class Wrapper1_21_R2 implements VersionWrapper {
 
         Runnable runnable = () -> {
             player.sendBlockChange(loc, type.createBlockData());
-            sign.a(p.dW());
-            conn.b(sign.t());
+            sign.a(p.ai());
+            conn.b(sign.u());
             sign.a((World) null);
             conn.b(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign
 
@@ -151,9 +151,9 @@ public class Wrapper1_21_R2 implements VersionWrapper {
         sign.a(newSignText, true);
 
         EntityPlayer p = ((CraftPlayer) player).getHandle();
-        PlayerConnection conn = p.f;
-        sign.a(p.dW());
-        conn.b(sign.t());
+        PlayerConnection conn = p.g;
+        sign.a(p.ai());
+        conn.b(sign.u());
         sign.a((World) null);
         conn.b(new PacketPlayOutOpenSignEditor((BlockPosition) signEditor.getBlockPosition(), true));
     }

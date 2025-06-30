@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>signgui-parent</artifactId>
-        <version>2.5.2</version>
+        <version>2.5.3</version>
         <groupId>de.rapha149.signgui</groupId>
     </parent>
 
