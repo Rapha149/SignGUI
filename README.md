@@ -10,7 +10,7 @@ Maven dependency:
 <dependency>
     <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui</artifactId>
-    <version>2.5.2</version>
+    <version>2.5.3</version>
 </dependency>
 ```
 
@@ -139,7 +139,7 @@ By default, the handler is called by an asynchronous thread. You can change that
 An explanation for the different methods can be found on the [Javadoc](https://javadoc.io/doc/de.rapha149.signgui/signgui).
 
 Also: as you can see the code catches the `SignGUIVersionException` which could be thrown by `SignGUI.builder()` if the api does not support the Minecraft version of the server.
-If you're interested in why this exception exists, check the [release notes](https://github.com/Rapha149/SignGUI/releases/tag/v2.5.0).  
+If you're interested in why this exception exists, check these [release notes](https://github.com/Rapha149/SignGUI/releases/tag/v2.5.0).  
 
 ## Limitations
 
