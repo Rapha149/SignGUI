@@ -14,7 +14,7 @@ import java.util.Map;
 public class VersionMatcher {
 
     private static final Map<String, String> VERSIONS;
-    private static final String NEWEST_VERSION = "1_21_R4";
+    private static final String NEWEST_VERSION = "1_21_R5";
 
     private static boolean initialized;
     private static VersionWrapper wrapper;
