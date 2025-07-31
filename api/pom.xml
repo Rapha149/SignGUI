@@ -44,6 +44,12 @@
             <version>20240303</version>
         </dependency>-->
         <dependency>
+            <groupId>com.tcoded</groupId>
+            <artifactId>FoliaLib</artifactId>
+            <version>0.5.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.8-R0.1-SNAPSHOT</version>
@@ -285,14 +291,18 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <!--<configuration>
+                        <configuration>
                             <relocations>
                                 <relocation>
+                                    <pattern>com.tcoded.folialib</pattern>
+                                    <shadedPattern>de.rapha149.signgui.lib.folialib</shadedPattern>
+                                </relocation>
+                                <!--<relocation>
                                     <pattern>org.json</pattern>
                                     <shadedPattern>de.rapha149.signgui.json</shadedPattern>
-                                </relocation>
+                                </relocation>-->
                             </relocations>
-                        </configuration>-->
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

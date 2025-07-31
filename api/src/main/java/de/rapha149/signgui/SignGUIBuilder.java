@@ -176,6 +176,12 @@ public class SignGUIBuilder {
     public SignGUIBuilder callHandlerSynchronously(JavaPlugin plugin) {
         this.callHandlerSynchronously = true;
         this.plugin = plugin;
+        
+        // Initialize FoliaLibManager if not already initialized
+        if (!FoliaLibManager.initialized) {
+            FoliaLibManager.initialize(plugin);
+        }
+        
         return this;
     }
 

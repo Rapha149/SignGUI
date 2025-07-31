@@ -5,7 +5,6 @@ import de.rapha149.signgui.exception.SignGUIException;
 import de.rapha149.signgui.exception.SignGUIVersionException;
 import de.rapha149.signgui.version.VersionMatcher;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,7 +107,7 @@ public class SignGUI {
                 };
 
                 if (callHandlerSynchronously)
-                    Bukkit.getScheduler().runTask(plugin, runnable);
+                    FoliaLibManager.getFoliaLib().getScheduler().runAtEntity(player, task -> runnable.run());
                 else
                     runnable.run();
             });
