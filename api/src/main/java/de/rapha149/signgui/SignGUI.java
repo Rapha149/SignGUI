@@ -3,9 +3,9 @@ package de.rapha149.signgui;
 import de.rapha149.signgui.SignGUIAction.SignGUIActionInfo;
 import de.rapha149.signgui.exception.SignGUIException;
 import de.rapha149.signgui.exception.SignGUIVersionException;
+import de.rapha149.signgui.scheduler.SchedulerAdapterFactory;
 import de.rapha149.signgui.version.VersionMatcher;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,7 +108,7 @@ public class SignGUI {
                 };
 
                 if (callHandlerSynchronously)
-                    Bukkit.getScheduler().runTask(plugin, runnable);
+                    SchedulerAdapterFactory.getScheduler().runAtEntity(plugin, player, runnable, null);
                 else
                     runnable.run();
             });

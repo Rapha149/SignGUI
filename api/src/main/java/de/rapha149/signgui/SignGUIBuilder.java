@@ -6,7 +6,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -168,7 +167,9 @@ public class SignGUIBuilder {
     }
 
     /**
-     * If called the handler will be called synchronously by calling the method {@link org.bukkit.scheduler.BukkitScheduler#runTask(Plugin, Runnable)}
+     * If called the handler will be called synchronously on the player's thread.
+     * On Bukkit/Paper servers this runs on the main thread.
+     * On Folia servers this runs on the entity's region thread.
      *
      * @param plugin Your {@link org.bukkit.plugin.java.JavaPlugin} instance.
      * @return The {@link SignGUIBuilder} instance

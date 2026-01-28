@@ -57,6 +57,12 @@
         </dependency>
         <dependency>
             <groupId>de.rapha149.signgui</groupId>
+            <artifactId>signgui-scheduler</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.rapha149.signgui</groupId>
             <artifactId>signgui-1_8_R1</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
