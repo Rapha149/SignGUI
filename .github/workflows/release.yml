@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Git tag to create/publish (e.g. v2.5.4). Leave empty to use project version."
+        description: "Git tag to create/publish (e.g. v2.6.1). Leave empty to use project version."
         required: false
         default: ""
 

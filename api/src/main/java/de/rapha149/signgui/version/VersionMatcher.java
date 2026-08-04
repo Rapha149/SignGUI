@@ -9,9 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A utility class to get the version wrapper for the server version.
- * Prefers Minecraft protocol version (PacketUxUi-style), with CraftBukkit package
- * and Bukkit version fallbacks for older / unversioned servers.
+ * Selects the version wrapper for the running server.
+ * <p>
+ * Resolution order (PacketUxUi-style):
+ * <ol>
+ *   <li>Minecraft protocol version → NMS bucket</li>
+ *   <li>CraftBukkit package ({@code v1_x_Ry}) when present — also used to disambiguate
+ *       same-protocol buckets such as 1.8.x (protocol 47)</li>
+ *   <li>Bukkit version string map for unversioned packages (26.x) / probe failures</li>
+ * </ol>
  */
 public class VersionMatcher {
 
@@ -129,27 +135,59 @@ public class VersionMatcher {
     }
 
     /**
-     * Resolves the NMS bucket id for the running server.
+     * Resolves the NMS bucket id for the running server (protocol-first).
      */
     static String resolveBucket() throws SignGUIVersionException {
-        String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
-        if (craftBukkitPackage.contains(".v")) {
-            String[] parts = craftBukkitPackage.split("\\.");
-            if (parts.length >= 4 && parts[3].startsWith("v")) {
-                return parts[3].substring(1);
-            }
-        }
+        String packageBucket = craftBukkitPackageBucket();
 
         try {
             int protocol = ProtocolProbe.current();
             String byProtocol = ProtocolVersions.bucketForProtocol(protocol);
             if (byProtocol != null) {
+                // Protocol 47 covers all 1.8.x CraftBukkit revisions — prefer package / version map.
+                if (protocol == ProtocolVersions.V1_8) {
+                    if (packageBucket != null && packageBucket.startsWith("1_8_")) {
+                        return packageBucket;
+                    }
+                    String fromBukkit = bucketFromBukkitVersion();
+                    if (fromBukkit != null && fromBukkit.startsWith("1_8_")) {
+                        return fromBukkit;
+                    }
+                }
                 return byProtocol;
             }
         } catch (SignGUIVersionException ignored) {
-            // fall through to Bukkit version map
+            // fall through
         }
 
+        if (packageBucket != null) {
+            return packageBucket;
+        }
+
+        String fromBukkit = bucketFromBukkitVersion();
+        if (fromBukkit != null) {
+            return fromBukkit;
+        }
+
+        return NEWEST_VERSION;
+    }
+
+    /**
+     * @return CraftBukkit revision bucket such as {@code 1_21_R5}, or {@code null} when unversioned
+     */
+    static String craftBukkitPackageBucket() {
+        String craftBukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
+        if (!craftBukkitPackage.contains(".v")) {
+            return null;
+        }
+        String[] parts = craftBukkitPackage.split("\\.");
+        if (parts.length >= 4 && parts[3].startsWith("v")) {
+            return parts[3].substring(1);
+        }
+        return null;
+    }
+
+    static String bucketFromBukkitVersion() {
         String minecraftVersion = normalizeMinecraftVersion(Bukkit.getBukkitVersion());
         String mapped = VERSIONS.get(minecraftVersion);
         if (mapped != null) {
@@ -164,8 +202,7 @@ public class VersionMatcher {
                 return mapped;
             }
         }
-
-        return VERSIONS.getOrDefault(minecraftVersion, NEWEST_VERSION);
+        return null;
     }
 
     static String normalizeMinecraftVersion(String bukkitVersion) {

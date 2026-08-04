@@ -138,8 +138,8 @@ public final class ProtocolVersions {
      * @return bucket such as {@code 1_21_R5} or {@code 26_2}, or {@code null} if unsupported
      */
     public static String bucketForProtocol(int protocol) {
-        if (in(protocol, R1_8_R1_MIN, R1_8_R1_MAX)) return "1_8_R1";
-        // Prefer R3 for 1.8.x protocol 47 on modern lookups after package check; keep R1 as package-driven.
+        // All 1.8.x share protocol 47; VersionMatcher refines R1/R2/R3 via package / Bukkit version.
+        if (in(protocol, R1_8_R1_MIN, R1_8_R3_MAX)) return "1_8_R3";
         if (in(protocol, R1_9_R1_MIN, R1_9_R1_MAX)) return "1_9_R1";
         if (in(protocol, R1_9_R2_MIN, R1_9_R2_MAX)) return "1_9_R2";
         if (in(protocol, R1_10_R1_MIN, R1_10_R1_MAX)) return "1_10_R1";

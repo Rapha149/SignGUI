@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.rapha149.signgui:signgui:2.5.4")
+    implementation("de.rapha149.signgui:signgui:2.6.1")
 }
 ```
 
@@ -43,7 +43,7 @@ dependencies {
 <dependency>
     <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui</artifactId>
-    <version>2.5.4</version>
+    <version>2.6.1</version>
 </dependency>
 ```
 
@@ -62,7 +62,18 @@ dependencies {
 
 JDK **21** runs Gradle; JDK **25** is used for Minecraft 26.x modules (Foojay toolchain).
 
-In order to avoid conflicts with other plugins that also use this api, relocate the package in your maven shade plugin:
+Wrappers are selected by **protocol version** at runtime (`ProtocolProbe` → `ProtocolVersions` → `VersionMatcher`), with CraftBukkit package / Bukkit version fallbacks for older and unversioned (26.x) servers.
+
+In order to avoid conflicts with other plugins that also use this api, relocate the package when shading:
+
+**Gradle (Shadow)**
+```kotlin
+tasks.shadowJar {
+    relocate("de.rapha149.signgui", "your.plugin.package.signgui")
+}
+```
+
+**Maven (shade plugin)**
 ```xml
 <build>
     <plugins>
