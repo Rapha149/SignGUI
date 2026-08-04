@@ -2,7 +2,11 @@ package util
 
 import org.gradle.api.Project
 
-private val versionExceptions = mapOf(
+/**
+ * Exact Spigot NMS versions the wrappers were written against (from pre-Gradle Maven POMs).
+ * Patch mismatches (e.g. 1.18 vs 1.18.1) change obfuscation and break compilation.
+ */
+private val spigotVersions = mapOf(
     "1_8_R1" to "1.8",
     "1_8_R2" to "1.8.3",
     "1_8_R3" to "1.8.8",
@@ -12,27 +16,27 @@ private val versionExceptions = mapOf(
     "1_11_R1" to "1.11",
     "1_12_R1" to "1.12",
     "1_13_R1" to "1.13",
-    "1_13_R2" to "1.13.2",
+    "1_13_R2" to "1.13.1",
     "1_14_R1" to "1.14",
     "1_15_R1" to "1.15",
     "1_16_R1" to "1.16.1",
-    "1_16_R2" to "1.16.3",
-    "1_16_R3" to "1.16.5",
-    "1_17_R1" to "1.17.1",
-    "1_18_R1" to "1.18.1",
+    "1_16_R2" to "1.16.2",
+    "1_16_R3" to "1.16.4",
+    "1_17_R1" to "1.17",
+    "1_18_R1" to "1.18",
     "1_18_R2" to "1.18.2",
-    "1_19_R1" to "1.19.2",
+    "1_19_R1" to "1.19",
     "1_19_R2" to "1.19.3",
     "1_19_R3" to "1.19.4",
-    "1_20_R1" to "1.20.1",
+    "1_20_R1" to "1.20",
     "1_20_R2" to "1.20.2",
-    "1_20_R3" to "1.20.4",
-    "1_20_R4" to "1.20.6",
+    "1_20_R3" to "1.20.3",
+    "1_20_R4" to "1.20.5",
     "1_21_R1" to "1.21.1",
     "1_21_R2" to "1.21.3",
     "1_21_R3" to "1.21.4",
     "1_21_R4" to "1.21.5",
-    "1_21_R5" to "1.21.8",
+    "1_21_R5" to "1.21.6",
     "1_21_R6" to "1.21.10",
     "1_21_R7" to "1.21.11",
     "26_1" to "26.1.2",
@@ -42,7 +46,7 @@ private val versionExceptions = mapOf(
 /** Paperweight / Spigot Maven version for the current NMS module project name. */
 fun Project.mcVersion(): String {
     val projectName = project.name.replace("Mojang", "")
-    return versionExceptions[projectName]
+    return spigotVersions[projectName]
         ?: error("No mcVersion mapping for project '${project.name}'")
 }
 
@@ -55,6 +59,7 @@ fun Project.paperDevBundleVersion(): String {
         "1_21_R2" -> "1.21.3-R0.1-SNAPSHOT"
         "1_21_R3" -> "1.21.4-R0.1-SNAPSHOT"
         "1_21_R4" -> "1.21.5-R0.1-SNAPSHOT"
+        // Paper-nms used 1.21.6; 1.21.7/1.21.8 share the same CraftBukkit revision.
         "1_21_R5" -> "1.21.8-R0.1-SNAPSHOT"
         "1_21_R6" -> "1.21.10-R0.1-SNAPSHOT"
         "1_21_R7" -> "1.21.11-R0.1-SNAPSHOT"

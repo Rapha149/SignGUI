@@ -38,3 +38,4 @@ gradle-app.setting
 /mappings
 /wrapper
 /.paper-nms
+*.salive

@@ -11,8 +11,14 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven("https://repo.codemc.io/repository/nms/")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        exclusiveContent {
+            forRepository {
+                maven("https://repo.codemc.io/repository/nms/")
+            }
+            filter {
+                includeGroup("org.spigotmc")
+            }
+        }
         maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
