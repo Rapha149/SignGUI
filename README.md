@@ -1,21 +1,35 @@
 # SignGUI [![Build](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml/badge.svg)](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml)
 An api to get input text via a sign in Minecraft.  
-The api supports the Minecraft versions from `1.8` to `26.2`.  
+The api supports the Minecraft versions from `1.8` to `26.2` (protocol-selected wrappers).  
 Also supports adventure text and mojang-mapped Paper plugins (1.20.5+).
 
 Distributed via [Reposilite](http://repo.mastersmp.net/).
 
-## ✨ Full Platform Support
-- ✅ **Bukkit / Spigot / Paper** - Full support
-- ✅ **Folia** - Complete regionized multithreading support
-- ✅ **CanvasMC** - Full support
-- ✅ **Archlight** - Full support (Forge+Bukkit hybrid)
+## Full Platform Support
+- **Bukkit / Spigot / Paper** — Full support
+- **Folia** — Native regionized multithreading support
+- **CanvasMC / Archlight** — Supported via platform detection
 
-SignGUI automatically detects your server platform and uses the appropriate scheduler for thread-safe operation!
+SignGUI detects the server platform and uses the appropriate scheduler.
 
 ## Integration
 
-Add the MasterSMP repo, then depend on SignGUI:
+Add the MasterSMP repo, then depend on the fat jar:
+
+**Gradle Kotlin**
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("http://repo.mastersmp.net/releases")
+        isAllowInsecureProtocol = true
+    }
+}
+
+dependencies {
+    implementation("de.rapha149.signgui:signgui:2.5.4")
+}
+```
 
 **Maven**
 ```xml
@@ -33,28 +47,20 @@ Add the MasterSMP repo, then depend on SignGUI:
 </dependency>
 ```
 
-**Gradle Kotlin**
-```kotlin
-repositories {
-    mavenCentral()
-    maven {
-        url = uri("http://repo.mastersmp.net/releases")
-        isAllowInsecureProtocol = true
-    }
-}
-
-dependencies {
-    implementation("de.rapha149.signgui:signgui:2.5.4")
-}
-```
-
 **Publish (maintainers only)**
 ```bash
-# Release → http://repo.mastersmp.net/releases
-mvn deploy -pl api -am --settings .github/maven-settings.xml
-
+./gradlew publish          # → http://repo.mastersmp.net/releases
+./gradlew publishSnapshot  # → http://repo.mastersmp.net/snapshots
 # Requires REPOSILITE_USER + REPOSILITE_TOKEN
 ```
+
+| Range | Mapping |
+| --- | --- |
+| 1.8 – 1.20.4 | Spigot-mapped NMS modules |
+| 1.20.5 – 1.21.11 | Mojang-mapped Paper (shared modern era) + Spigot modules |
+| 26.1 – 26.2+ | Mojang-mapped (shared 26 era; Spigot & Paper) |
+
+JDK **21** runs Gradle; JDK **25** is used for Minecraft 26.x modules (Foojay toolchain).
 
 In order to avoid conflicts with other plugins that also use this api, relocate the package in your maven shade plugin:
 ```xml

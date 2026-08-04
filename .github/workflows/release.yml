@@ -22,6 +22,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
       - name: Set up JDK 21 and 25
         uses: actions/setup-java@v4
         with:
@@ -29,12 +32,12 @@ jobs:
           java-version: |
             21
             25
-          cache: maven
+          cache: gradle
 
       - name: Resolve version / tag
         id: meta
         run: |
-          PROJECT_VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version --file pom.xml)
+          PROJECT_VERSION="$(./gradlew -q printVersion)"
           TAG_INPUT="${{ github.event.inputs.tag }}"
           if [ -n "$TAG_INPUT" ]; then
             TAG="$TAG_INPUT"
@@ -45,14 +48,8 @@ jobs:
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "Resolved tag=${TAG} version=${PROJECT_VERSION}"
 
-      - name: Initialize Paper NMS
-        run: |
-          for file in $(grep -l '<artifactId>paper-nms</artifactId>' $(find . -name 'pom.xml')); do
-            mvn -B paper-nms:init --file "$file"
-          done
-
       - name: Build publishable artifacts
-        run: mvn -B clean install --file pom.xml -DskipTests
+        run: chmod +x gradlew && ./gradlew clean shadowJar -x test --no-daemon
 
       - name: Publish release to Reposilite
         run: |
@@ -60,8 +57,7 @@ jobs:
             echo "Missing REPOSILITE_USER / REPOSILITE_TOKEN secrets."
             exit 1
           fi
-          mvn -B deploy --file pom.xml -pl api -am -DskipTests \
-            --settings .github/maven-settings.xml
+          ./gradlew publish -x test --no-daemon
         env:
           REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
           REPOSILITE_TOKEN: ${{ secrets.REPOSILITE_TOKEN }}
@@ -73,4 +69,4 @@ jobs:
           name: ${{ steps.meta.outputs.tag }}
           generate_release_notes: true
           files: |
-            api/target/signgui-*.jar
+            build/libs/signgui-*.jar

@@ -1,0 +1,12 @@
+[versions]
+paperweight-userdev = "2.0.0-beta.21"
+shadow = "9.6.0"
+folia-api = "1.21.11-R0.1-SNAPSHOT"
+
+[libraries]
+paperweight-userdev = { group = "io.papermc.paperweight", name = "paperweight-userdev", version.ref = "paperweight-userdev" }
+folia-api = { group = "dev.folia", name = "folia-api", version.ref = "folia-api" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+paperweight-userdev = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight-userdev" }
