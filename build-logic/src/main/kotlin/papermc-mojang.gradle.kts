@@ -12,8 +12,14 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
+val bundleVersion = paperDevBundleVersion()
+
 dependencies {
-    paperweight.paperDevBundle(paperDevBundleVersion())
+    paperweight.paperDevBundle(bundleVersion)
+    // paperweight's mapped server alone is not always enough for Bukkit/Netty API compile.
+    compileOnly("io.papermc.paper:paper-api:$bundleVersion")
+    compileOnly("io.netty:netty-transport:4.1.118.Final")
+    compileOnly("io.netty:netty-handler:4.1.118.Final")
     compileOnly(project(":wrapper"))
 }
 
@@ -63,7 +69,7 @@ if (eraDirName != null) {
 
     sourceSets.named("main") {
         java {
-            setSrcDirs(listOf(sharedOut))
+            setSrcDirs(listOf(sharedOut, file("src/main/java")))
         }
     }
 

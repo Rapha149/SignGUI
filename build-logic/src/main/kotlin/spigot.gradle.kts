@@ -5,22 +5,16 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
-    // Prefer CodeMC fat NMS jars over Spigot Hub POMs (which lack remapped server classes).
+    // CodeMC fat NMS jars must win over Spigot Hub POM-only artifacts (e.g. 1.21.1).
     exclusiveContent {
         forRepository {
             maven("https://repo.codemc.io/repository/nms/")
         }
-        filter {
-            includeGroup("org.spigotmc")
-        }
-    }
-    exclusiveContent {
         forRepository {
             maven("https://repo.codemc.org/repository/nms/")
         }
         filter {
-            includeGroup("org.spigotmc")
+            includeModule("org.spigotmc", "spigot")
         }
     }
 }

@@ -11,15 +11,11 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-        exclusiveContent {
-            forRepository {
-                maven("https://repo.codemc.io/repository/nms/")
-            }
-            filter {
-                includeGroup("org.spigotmc")
-            }
-        }
         maven("https://repo.papermc.io/repository/maven-public/")
+        // Prefer CodeMC NMS jars over Spigot Hub POM-only coordinates.
+        maven("https://repo.codemc.io/repository/nms/")
+        maven("https://repo.codemc.org/repository/nms/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
 }
 

@@ -91,7 +91,7 @@ public class Wrapper1_21_R7 implements VersionWrapper {
 
         boolean schedule = false;
         NetworkManager manager = (NetworkManager) NETWORK_MANAGER_FIELD.get(conn);
-        ChannelPipeline pipeline = manager.n.pipeline();
+        ChannelPipeline pipeline = manager.k.pipeline();
         if (pipeline.names().contains("SignGUI")) {
             ChannelHandler handler = pipeline.get("SignGUI");
             if (handler instanceof SignGUIChannelHandler<?> signGUIHandler) {
@@ -105,8 +105,8 @@ public class Wrapper1_21_R7 implements VersionWrapper {
 
         Runnable runnable = () -> {
             player.sendBlockChange(loc, type.createBlockData());
-            sign.a(p.ai());
-            conn.b(sign.u());
+            sign.a(p.ao());
+            conn.b(sign.l());
             sign.a((World) null);
             conn.b(new PacketPlayOutOpenSignEditor(pos, true)); // flag = front/back of sign
 
@@ -156,8 +156,8 @@ public class Wrapper1_21_R7 implements VersionWrapper {
 
         EntityPlayer p = ((CraftPlayer) player).getHandle();
         PlayerConnection conn = p.g;
-        sign.a(p.ai());
-        conn.b(sign.u());
+        sign.a(p.ao());
+        conn.b(sign.l());
         sign.a((World) null);
         conn.b(new PacketPlayOutOpenSignEditor((BlockPosition) signEditor.getBlockPosition(), true));
     }

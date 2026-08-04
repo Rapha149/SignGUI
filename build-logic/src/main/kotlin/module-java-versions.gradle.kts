@@ -52,7 +52,8 @@ tasks.withType<JavaCompile>().configureEach {
     // --release needs javac 9+; Java 8 toolchains inherit bytecode level from the toolchain.
     when (project.name) {
         in sharedApiJava8 -> options.release.set(8)
-        in modulesJava25 -> options.release.set(21)
+        // Must match toolchain: paper-api 26.x requires JVM 25 attributes.
+        in modulesJava25 -> options.release.set(25)
         in modulesJava21 -> options.release.set(21)
         in modulesJava17 -> options.release.set(17)
         in modulesJava16 -> options.release.set(16)
