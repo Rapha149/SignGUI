@@ -1,7 +1,9 @@
-# SignGUI [![Build](https://github.com/Rapha149/SignGUI/actions/workflows/build.yml/badge.svg)](https://github.com/Rapha149/SignGUI/actions/workflows/build.yml) [![Maven Central](https://img.shields.io/maven-central/v/de.rapha149.signgui/signgui?label=Maven%20Central)](https://central.sonatype.com/artifact/de.rapha149.signgui/signgui) [![Javadoc](https://javadoc.io/badge2/de.rapha149.signgui/signgui/Javadoc.svg)](https://javadoc.io/doc/de.rapha149.signgui/signgui) 
+# SignGUI [![Build](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml/badge.svg)](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml)
 An api to get input text via a sign in Minecraft.  
 The api supports the Minecraft versions from `1.8` to `26.2`.  
 Also supports adventure text and mojang-mapped Paper plugins (1.20.5+).
+
+Distributed via [Reposilite](http://repo.mastersmp.net/).
 
 ## ✨ Full Platform Support
 - ✅ **Bukkit / Spigot / Paper** - Full support
@@ -13,13 +15,45 @@ SignGUI automatically detects your server platform and uses the appropriate sche
 
 ## Integration
 
-Maven dependency:
+Add the MasterSMP repo, then depend on SignGUI:
+
+**Maven**
 ```xml
+<repositories>
+    <repository>
+        <id>mastersmp</id>
+        <url>http://repo.mastersmp.net/releases</url>
+    </repository>
+</repositories>
+
 <dependency>
     <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui</artifactId>
     <version>2.5.4</version>
 </dependency>
+```
+
+**Gradle Kotlin**
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("http://repo.mastersmp.net/releases")
+        isAllowInsecureProtocol = true
+    }
+}
+
+dependencies {
+    implementation("de.rapha149.signgui:signgui:2.5.4")
+}
+```
+
+**Publish (maintainers only)**
+```bash
+# Release → http://repo.mastersmp.net/releases
+mvn deploy -pl api -am --settings .github/maven-settings.xml
+
+# Requires REPOSILITE_USER + REPOSILITE_TOKEN
 ```
 
 In order to avoid conflicts with other plugins that also use this api, relocate the package in your maven shade plugin:
