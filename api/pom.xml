@@ -277,6 +277,18 @@
             <version>${project.parent.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>de.rapha149.signgui</groupId>
+            <artifactId>signgui-26_1-mojang</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.rapha149.signgui</groupId>
+            <artifactId>signgui-26_2-mojang</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

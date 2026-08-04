@@ -14,7 +14,7 @@ import java.util.Map;
 public class VersionMatcher {
 
     private static final Map<String, String> VERSIONS;
-    private static final String NEWEST_VERSION = "1_21_R5";
+    private static final String NEWEST_VERSION = "26_2";
 
     private static boolean initialized;
     private static VersionWrapper wrapper;
@@ -30,6 +30,10 @@ public class VersionMatcher {
         versions.put("1.21.6", "1_21_R5");
         versions.put("1.21.7", "1_21_R5");
         versions.put("1.21.8", "1_21_R5");
+        versions.put("26.1", "26_1");
+        versions.put("26.1.1", "26_1");
+        versions.put("26.1.2", "26_1");
+        versions.put("26.2", "26_2");
         VERSIONS = Collections.unmodifiableMap(versions);
     }
 
@@ -79,6 +83,9 @@ public class VersionMatcher {
     }
 
     private static boolean useMojangMappings(String version) {
+        if (!version.startsWith("1_"))
+            return true;
+
         try {
             Class.forName("com.destroystokyo.paper.ParticleBuilder");
         } catch (ClassNotFoundException ignored) {
