@@ -1,12 +1,13 @@
 package de.rapha149.signgui;
 
 import de.rapha149.signgui.version.VersionWrapper;
+import de.rapha149.signgui.util.PlatformDetector;
+import de.rapha149.signgui.util.SignGUIScheduler;
 import org.apache.commons.lang.Validate;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -168,17 +169,37 @@ public class SignGUIBuilder {
     }
 
     /**
-     * If called the handler will be called synchronously by using the appropriate scheduler.
-     * This is required for Folia, CanvasMC, and Archlight support and ensures thread-safe execution.
-     * On Folia, tasks are scheduled via the player's entity scheduler (on the thread owning the player's region).
-     * On Bukkit/Spigot/Paper, tasks are scheduled on the main thread.
+     * Binds your plugin and schedules the finish handler on the correct thread.
+     * <p>
+     * <b>Required on Folia.</b> Recommended on all platforms.
+     * On Folia/Paper region platforms, work runs on the player's {@code EntityScheduler}.
+     * On Bukkit/Spigot, work runs on the main thread.
+     * <p>
+     * Also enables delayed sign reopens (same block position) via the region scheduler
+     * instead of a raw thread pool.
      *
      * @param plugin Your {@link org.bukkit.plugin.java.JavaPlugin} instance.
      * @return The {@link SignGUIBuilder} instance
      */
     public SignGUIBuilder callHandlerSynchronously(JavaPlugin plugin) {
+        Validate.notNull(plugin, "The plugin cannot be null");
         this.callHandlerSynchronously = true;
         this.plugin = plugin;
+        SignGUIScheduler.setPlugin(plugin);
+        return this;
+    }
+
+    /**
+     * Binds your plugin for Folia/Paper region scheduling without forcing the finish
+     * handler onto the entity thread. Prefer {@link #callHandlerSynchronously(JavaPlugin)}.
+     *
+     * @param plugin Your {@link org.bukkit.plugin.java.JavaPlugin} instance.
+     * @return The {@link SignGUIBuilder} instance
+     */
+    public SignGUIBuilder setPlugin(JavaPlugin plugin) {
+        Validate.notNull(plugin, "The plugin cannot be null");
+        this.plugin = plugin;
+        SignGUIScheduler.setPlugin(plugin);
         return this;
     }
 
@@ -189,6 +210,11 @@ public class SignGUIBuilder {
      */
     public SignGUI build() {
         Validate.notNull(handler, "handler must be set");
+        if (PlatformDetector.isFolia()) {
+            Validate.notNull(plugin, "Folia requires callHandlerSynchronously(plugin) (or setPlugin(plugin))");
+            // Finish handling must always hop off the Netty thread on Folia.
+            callHandlerSynchronously = true;
+        }
         return new SignGUI(lines, adventureLines, type, color, glow, loc, handler, callHandlerSynchronously, plugin);
     }
 }

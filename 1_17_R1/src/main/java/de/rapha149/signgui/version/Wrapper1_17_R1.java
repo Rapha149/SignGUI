@@ -22,7 +22,6 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 public class Wrapper1_17_R1 implements VersionWrapper {
@@ -103,7 +102,7 @@ public class Wrapper1_17_R1 implements VersionWrapper {
         };
 
         if (schedule)
-            SCHEDULER.schedule(runnable, 200, TimeUnit.MILLISECONDS);
+            scheduleReopen(player, loc, runnable);
         else
             runnable.run();
     }

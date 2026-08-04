@@ -4,35 +4,32 @@ import de.rapha149.signgui.util.PlatformDetector;
 import de.rapha149.signgui.util.SchedulerAdapter;
 
 /**
- * Factory class for creating appropriate scheduler adapters based on the server platform.
+ * Provides the platform-appropriate {@link SchedulerAdapter}.
+ * <p>
+ * Prefers Paper/Folia region schedulers whenever {@code RegionScheduler} is present
+ * (covers Folia and modern Paper). Falls back to the Bukkit scheduler otherwise.
  */
-public class SchedulerFactory {
-    
-    private static SchedulerAdapter cachedAdapter;
-    
-    /**
-     * Gets the appropriate scheduler adapter for the current platform.
-     *
-     * @return The scheduler adapter
-     */
+public final class SchedulerFactory {
+
+    private static volatile SchedulerAdapter cachedAdapter;
+
+    private SchedulerFactory() {
+    }
+
     public static SchedulerAdapter getScheduler() {
-        if (cachedAdapter != null) {
+        SchedulerAdapter adapter = cachedAdapter;
+        if (adapter != null) {
+            return adapter;
+        }
+        synchronized (SchedulerFactory.class) {
+            if (cachedAdapter == null) {
+                if (PlatformDetector.hasRegionScheduler() && FoliaSchedulerAdapter.isAvailable()) {
+                    cachedAdapter = new FoliaSchedulerAdapter();
+                } else {
+                    cachedAdapter = new BukkitSchedulerAdapter();
+                }
+            }
             return cachedAdapter;
         }
-        
-        if (PlatformDetector.isFolia()) {
-            cachedAdapter = new FoliaSchedulerAdapter();
-        } else {
-            cachedAdapter = new BukkitSchedulerAdapter();
-        }
-        
-        return cachedAdapter;
-    }
-    
-    /**
-     * Resets the cached scheduler adapter. Useful for testing or reloading.
-     */
-    public static void reset() {
-        cachedAdapter = null;
     }
 }

@@ -7,10 +7,10 @@ Distributed via [Reposilite](http://repo.mastersmp.net/).
 
 ## Full Platform Support
 - **Bukkit / Spigot / Paper** — Full support
-- **Folia** — Native regionized multithreading support
+- **Folia** — Regionized scheduling via Entity/Region/Global/Async schedulers (plugin binding required)
 - **CanvasMC / Archlight** — Supported via platform detection
 
-SignGUI detects the server platform and uses the appropriate scheduler.
+SignGUI detects the server platform and uses Paper/Folia region schedulers when available, otherwise the Bukkit scheduler.
 
 ## Integration
 
@@ -168,14 +168,14 @@ try {
             return Collections.emptyList();
         })
     
-        // RECOMMENDED: Call handler synchronously for thread safety
-        // REQUIRED for Folia; RECOMMENDED for CanvasMC, Archlight, and other platforms
+        // REQUIRED for Folia (also binds advanced region scheduling)
+        // RECOMMENDED for Paper / CanvasMC / Archlight / Bukkit thread safety
         .callHandlerSynchronously(this) // "this" = your JavaPlugin instance
     
         // build the SignGUI
         .build();
     
-    // open the sign
+    // open the sign (on Folia this is scheduled on the player's entity/region thread)
     gui.open(player);
     
     // you can also open the sign for multiple players
@@ -185,12 +185,17 @@ try {
 }
 ```
 
-You don't have to call all methods. Only `setHandler` is mandatory.
+You don't have to call all methods. Only `setHandler` is mandatory. On **Folia**, `callHandlerSynchronously(plugin)` is also mandatory.
 
-**Important:** `callHandlerSynchronously(plugin)` is **REQUIRED for Folia** and **RECOMMENDED for all other platforms for thread safety**. On Folia, this ensures tasks run on the correct region thread. On other platforms, it ensures tasks run on the main thread.
+**Important:** `callHandlerSynchronously(plugin)` is **REQUIRED for Folia** and **RECOMMENDED for all other platforms**. It:
+- hops finish handling off the Netty thread onto the player's **EntityScheduler** (Folia/Paper) or the main thread (Bukkit)
+- schedules sign opens on the correct region thread
+- routes delayed reopens (~4 ticks) through region schedulers instead of a raw thread pool
+- makes `SignGUIAction.openInventory` / `runSync` Folia-safe
 
-By default, the handler is called by an asynchronous thread. You can change that behaviour by calling the method `callHandlerSynchronously` of the builder.
-An explanation for the different methods can be found on the [Javadoc](https://javadoc.io/doc/de.rapha149.signgui/signgui).
+Public helpers also available: `SignGUIScheduler.run(player, task)`, `runAt(location, task)`, `runGlobal(task)`, `runAsync(task)`.
+
+By default (non-Folia, without `callHandlerSynchronously`), the finish handler runs on the Netty thread. Prefer binding your plugin for thread safety.
 
 Also: as you can see the code catches the `SignGUIVersionException` which could be thrown by `SignGUI.builder()` if the api does not support the Minecraft version of the server.
 If you're interested in why this exception exists, check these [release notes](https://github.com/Rapha149/SignGUI/releases/tag/v2.5.0).  
