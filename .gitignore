@@ -39,3 +39,4 @@ gradle-app.setting
 /wrapper
 /.paper-nms
 *.salive
+/.idea
