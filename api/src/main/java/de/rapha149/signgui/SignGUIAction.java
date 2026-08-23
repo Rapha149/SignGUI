@@ -1,7 +1,8 @@
 package de.rapha149.signgui;
 
+import de.rapha149.signgui.util.SignGUIScheduler;
+import de.rapha149.signgui.util.scheduler.SchedulerFactory;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -101,7 +102,7 @@ public interface SignGUIAction {
 
     /**
      * Creates a new SignGUIAction that opens an inventory.
-     * The inventory is opened synchronously by calling the method {@link org.bukkit.scheduler.BukkitScheduler#runTask(org.bukkit.plugin.Plugin, Runnable)}
+     * The inventory is opened on the player's entity/region thread (Folia/Paper) or the main thread (Bukkit).
      *
      * @param plugin    Your {@link org.bukkit.plugin.java.JavaPlugin} instance
      * @param inventory The inventory to open
@@ -122,7 +123,8 @@ public interface SignGUIAction {
 
             @Override
             public void execute(SignGUI gui, SignEditor signEditor, Player player) {
-                Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(inventory));
+                SignGUIScheduler.setPlugin(plugin);
+                SchedulerFactory.getScheduler().runTask(plugin, player, () -> player.openInventory(inventory));
             }
         };
     }
@@ -154,7 +156,8 @@ public interface SignGUIAction {
     }
 
     /**
-     * Creates a new SignGUIAction that runs a runnable synchronously.
+     * Creates a new SignGUIAction that runs a runnable on the player's entity/region thread
+     * (Folia/Paper) or the main thread (Bukkit).
      *
      * @param plugin   Your {@link org.bukkit.plugin.java.JavaPlugin} instance
      * @param runnable The runnable to run
@@ -175,7 +178,8 @@ public interface SignGUIAction {
 
             @Override
             public void execute(SignGUI gui, SignEditor signEditor, Player player) {
-                Bukkit.getScheduler().runTask(plugin, runnable);
+                SignGUIScheduler.setPlugin(plugin);
+                SchedulerFactory.getScheduler().runTask(plugin, player, runnable);
             }
         };
     }

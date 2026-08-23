@@ -1,22 +1,19 @@
 package de.rapha149.signgui.version;
 
 import de.rapha149.signgui.SignEditor;
+import de.rapha149.signgui.SignGUIBridge;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 
 /**
  * Interface for version wrappers
  */
 public interface VersionWrapper {
-
-    ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(0);
 
     /**
      * @return The default type for the sign. Different between some versions.
@@ -67,5 +64,13 @@ public interface VersionWrapper {
     default Location getDefaultLocation(Player player) {
         Location loc = player.getEyeLocation();
         return loc.clone().add(loc.getDirection().multiply(-3));
+    }
+
+    /**
+     * Schedules a reopen after closing a previous SignGUI at the same position.
+     * Uses Folia/Paper entity schedulers when the API has registered one (~4 ticks ≈ 200ms).
+     */
+    default void scheduleReopen(Player player, Location location, Runnable runnable) {
+        SignGUIBridge.runLater(player, location, runnable, 4L);
     }
 }

@@ -3,9 +3,11 @@ package de.rapha149.signgui;
 import de.rapha149.signgui.SignGUIAction.SignGUIActionInfo;
 import de.rapha149.signgui.exception.SignGUIException;
 import de.rapha149.signgui.exception.SignGUIVersionException;
+import de.rapha149.signgui.util.PlatformDetector;
+import de.rapha149.signgui.util.SignGUIScheduler;
+import de.rapha149.signgui.util.scheduler.SchedulerFactory;
 import de.rapha149.signgui.version.VersionMatcher;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -59,13 +61,27 @@ public class SignGUI {
      * <p>
      * Note: if there already is a sign gui open for the player, it will be closed and the {@link SignGUIFinishHandler} will not be called.
      * It is recommended to avoid opening a sign gui for a player that already has one open.
+     * <p>
+     * On Folia (and when a plugin is bound), the open is scheduled on the player's entity/region thread.
      *
      * @param player The player to open the gui for.
      * @throws de.rapha149.signgui.exception.SignGUIException If an error occurs while opening the gui.
      */
     public void open(Player player) throws SignGUIException {
         Validate.notNull(player, "The player cannot be null");
+        if (PlatformDetector.isFolia() && plugin == null) {
+            throw new SignGUIException("Folia requires callHandlerSynchronously(plugin) before opening a SignGUI");
+        }
 
+        if (plugin != null) {
+            SignGUIScheduler.setPlugin(plugin);
+            SchedulerFactory.getScheduler().runTask(plugin, player, () -> openNow(player));
+        } else {
+            openNow(player);
+        }
+    }
+
+    private void openNow(Player player) {
         try {
             VersionMatcher.getWrapper().openSignEditor(player, lines, adventureLines, type, color, glow, signLoc, (signEditor, resultLines) -> {
                 Runnable runnable = () -> {
@@ -107,11 +123,18 @@ public class SignGUI {
                         action.execute(this, signEditor, player);
                 };
 
-                if (callHandlerSynchronously)
-                    Bukkit.getScheduler().runTask(plugin, runnable);
-                else
+                // Folia always hops to the entity scheduler; elsewhere only when requested.
+                if (callHandlerSynchronously || PlatformDetector.isFolia()) {
+                    if (plugin == null) {
+                        throw new SignGUIException("callHandlerSynchronously(plugin) is required for synchronous / Folia finish handling");
+                    }
+                    SchedulerFactory.getScheduler().runTask(plugin, player, runnable);
+                } else {
                     runnable.run();
+                }
             });
+        } catch (SignGUIException e) {
+            throw e;
         } catch (Exception e) {
             throw new SignGUIException("Failed to open sign gui", e);
         }

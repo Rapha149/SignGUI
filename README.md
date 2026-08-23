@@ -1,20 +1,90 @@
-# SignGUI [![Build](https://github.com/Rapha149/SignGUI/actions/workflows/build.yml/badge.svg)](https://github.com/Rapha149/SignGUI/actions/workflows/build.yml) [![Maven Central](https://img.shields.io/maven-central/v/de.rapha149.signgui/signgui?label=Maven%20Central)](https://central.sonatype.com/artifact/de.rapha149.signgui/signgui) [![Javadoc](https://javadoc.io/badge2/de.rapha149.signgui/signgui/Javadoc.svg)](https://javadoc.io/doc/de.rapha149.signgui/signgui) 
+> [!WARNING]
+>
+> ## This fork is abandoned
+>
+> This fork of SignGUI is **no longer maintained** and should not be used for new projects.
+>
+> **It is strongly recommended to use [PacketUxUi](https://github.com/OPmasterLEO/PacketUxUi) instead.**
+>
+> PacketUxUi is the actively recommended successor for projects that need packet-based UI/input functionality in Minecraft.
+
+
+# SignGUI [![Build](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml/badge.svg)](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml)
 An api to get input text via a sign in Minecraft.  
-The api supports the Minecraft versions from `1.8` to `1.21`.  
+The api supports the Minecraft versions from `1.8` to `26.2` (protocol-selected wrappers).  
 Also supports adventure text and mojang-mapped Paper plugins (1.20.5+).
+
+Distributed via [Reposilite](http://repo.mastersmp.net/).
+
+## Full Platform Support
+- **Bukkit / Spigot / Paper** — Full support
+- **Folia** — Regionized scheduling via Entity/Region/Global/Async schedulers (plugin binding required)
+- **CanvasMC / Archlight** — Supported via platform detection
+
+SignGUI detects the server platform and uses Paper/Folia region schedulers when available, otherwise the Bukkit scheduler.
 
 ## Integration
 
-Maven dependency:
+Add the MasterSMP repo, then depend on the fat jar:
+
+**Gradle Kotlin**
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("http://repo.mastersmp.net/releases")
+        isAllowInsecureProtocol = true
+    }
+}
+
+dependencies {
+    implementation("de.rapha149.signgui:signgui:2.6.1")
+}
+```
+
+**Maven**
 ```xml
+<repositories>
+    <repository>
+        <id>mastersmp</id>
+        <url>http://repo.mastersmp.net/releases</url>
+    </repository>
+</repositories>
+
 <dependency>
     <groupId>de.rapha149.signgui</groupId>
     <artifactId>signgui</artifactId>
-    <version>2.5.4</version>
+    <version>2.6.1</version>
 </dependency>
 ```
 
-In order to avoid conflicts with other plugins that also use this api, relocate the package in your maven shade plugin:
+**Publish (maintainers only)**
+```bash
+./gradlew publish          # → http://repo.mastersmp.net/releases
+./gradlew publishSnapshot  # → http://repo.mastersmp.net/snapshots
+# Requires REPOSILITE_USER + REPOSILITE_TOKEN
+```
+
+| Range | Mapping |
+| --- | --- |
+| 1.8 – 1.20.4 | Spigot-mapped NMS modules |
+| 1.20.5 – 1.21.11 | Mojang-mapped Paper (shared modern era) + Spigot modules |
+| 26.1 – 26.2+ | Mojang-mapped (shared 26 era; Spigot & Paper) |
+
+JDK **21** runs Gradle; JDK **25** is used for Minecraft 26.x modules (Foojay toolchain).
+
+Wrappers are selected by **protocol version** at runtime (`ProtocolProbe` → `ProtocolVersions` → `VersionMatcher`), with CraftBukkit package / Bukkit version fallbacks for older and unversioned (26.x) servers.
+
+In order to avoid conflicts with other plugins that also use this api, relocate the package when shading:
+
+**Gradle (Shadow)**
+```kotlin
+tasks.shadowJar {
+    relocate("de.rapha149.signgui", "your.plugin.package.signgui")
+}
+```
+
+**Maven (shade plugin)**
 ```xml
 <build>
     <plugins>
@@ -120,10 +190,14 @@ try {
             return Collections.emptyList();
         })
     
+        // REQUIRED for Folia (also binds advanced region scheduling)
+        // RECOMMENDED for Paper / CanvasMC / Archlight / Bukkit thread safety
+        .callHandlerSynchronously(this) // "this" = your JavaPlugin instance
+    
         // build the SignGUI
         .build();
     
-    // open the sign
+    // open the sign (on Folia this is scheduled on the player's entity/region thread)
     gui.open(player);
     
     // you can also open the sign for multiple players
@@ -133,10 +207,17 @@ try {
 }
 ```
 
-You don't have to call all methods. Only `setHandler` is mandatory.
+You don't have to call all methods. Only `setHandler` is mandatory. On **Folia**, `callHandlerSynchronously(plugin)` is also mandatory.
 
-By default, the handler is called by an asynchronous thread. You can change that behaviour by calling the method `callHandlerSynchronously` of the builder.
-An explanation for the different methods can be found on the [Javadoc](https://javadoc.io/doc/de.rapha149.signgui/signgui).
+**Important:** `callHandlerSynchronously(plugin)` is **REQUIRED for Folia** and **RECOMMENDED for all other platforms**. It:
+- hops finish handling off the Netty thread onto the player's **EntityScheduler** (Folia/Paper) or the main thread (Bukkit)
+- schedules sign opens on the correct region thread
+- routes delayed reopens (~4 ticks) through region schedulers instead of a raw thread pool
+- makes `SignGUIAction.openInventory` / `runSync` Folia-safe
+
+Public helpers also available: `SignGUIScheduler.run(player, task)`, `runAt(location, task)`, `runGlobal(task)`, `runAsync(task)`.
+
+By default (non-Folia, without `callHandlerSynchronously`), the finish handler runs on the Netty thread. Prefer binding your plugin for thread safety.
 
 Also: as you can see the code catches the `SignGUIVersionException` which could be thrown by `SignGUI.builder()` if the api does not support the Minecraft version of the server.
 If you're interested in why this exception exists, check these [release notes](https://github.com/Rapha149/SignGUI/releases/tag/v2.5.0).  
