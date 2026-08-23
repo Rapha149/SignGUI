@@ -1,3 +1,14 @@
+> [!WARNING]
+>
+> ## This fork is abandoned
+>
+> This fork of SignGUI is **no longer maintained** and should not be used for new projects.
+>
+> **It is strongly recommended to use [PacketUxUi](https://github.com/OPmasterLEO/PacketUxUi) instead.**
+>
+> PacketUxUi is the actively recommended successor for projects that need packet-based UI/input functionality in Minecraft.
+
+
 # SignGUI [![Build](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml/badge.svg)](https://github.com/OPmasterLEO/SignGUI/actions/workflows/build.yml)
 An api to get input text via a sign in Minecraft.  
 The api supports the Minecraft versions from `1.8` to `26.2` (protocol-selected wrappers).  
